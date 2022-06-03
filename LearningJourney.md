@@ -1,5 +1,19 @@
-Github: 
-    https://github.com/Litee/moq.autocomplete
+#  Visual Studio Extensions
+This is my first attempt at a Visual Studio Extension.
+Let the fun begin :)
+
+## Fantastic resource:
+Google: `mads kristensen extensions` 
+
+## Market place
+https://marketplace.visualstudio.com/
+
+## Download
+- [Extensibility Essentials 2022](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.ExtensibilityEssentials2022)
+
+## Github
+- [mads](https://github.com/madskristensen)
+- [moq.autocomplete](https://github.com/Litee/moq.autocomplete)
 
 Various resources:
 - Google `mads kristensen extensions` 
