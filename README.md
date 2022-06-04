@@ -30,7 +30,7 @@ public class TheTestFunction()
 **NOTE:** This extension will only change code following the file naming convention `*tests.cs` eg: `TheseAreMyHeroTests.cs`.
 
 ## Download Moq.QuickMock.vsix and install
-Download `Moq.QuickMock.vsix` from any successful [build](https://github.com/rpbeukes/Moq.QuickMock/actions/workflows/CI_main.yml?query=branch%3Amain+is%3Asuccess).
+Download `Moq.QuickMock.vsix` from latest successful [build](https://github.com/rpbeukes/Moq.QuickMock/actions/workflows/CI_main.yml?query=branch%3Amain+is%3Asuccess).
 
 ## How to use
 Put the cursor (caret) between the `()`, and hit `CTRL + .`.
