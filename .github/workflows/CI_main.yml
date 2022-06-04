@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,13 +18,25 @@ jobs:
         uses: microsoft/setup-msbuild@v1.1
       
       - name: checkout code
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
+      
+      - name: setup nuget
+        uses: nuget/setup-nuget@v1
+        with:
+          nuget-version: '6.x'
+      
+      - name: nuget restore
+        run: nuget restore Moq.QuickMock.sln
       
       - name: build solution
-      - run:  msbuild .\Moq.QuickMock.sln -t:rebuild -verbosity:diag -property:Configuration=Release
+        #run:  msbuild .\Moq.QuickMock.sln -t:rebuild -verbosity:diag -property:Configuration=Release
+        run:  msbuild Moq.QuickMock.sln -t:rebuild -property:Configuration=Release
+
+      - name: rename Moq.QuickMock.Vsix.vsix to Moq.QuickMock.vsix
+        run:  ren ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock.Vsix.vsix Moq.QuickMock.vsix
 
       - name: create artifact
         uses: actions/upload-artifact@v3
         with:
           name: Moq.QuickMock.vsix
-          path: ..\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock.vsix
+          path: ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock.vsix
