@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 
 namespace CodeRefactoring1
 {
-    [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(CodeRefactoring1CodeRefactoringProvider)), Shared]
-    internal class CodeRefactoring1CodeRefactoringProvider : CodeRefactoringProvider
+    [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(MoqQuickMockCodeRefactoringProvider)), Shared]
+    internal class MoqQuickMockCodeRefactoringProvider : CodeRefactoringProvider
     {
         public sealed override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
         {
@@ -25,73 +25,59 @@ namespace CodeRefactoring1
             // this refactor is only available in tests files eg: "*Tests.cs"
             if (node.SyntaxTree.FilePath.ToLower().Contains("tests.cs"))
             {
-                if (node is ArgumentListSyntax typeDecl)
+                if (node is ArgumentListSyntax argumentList)
                 {
-                    var isCreatingNewObject = typeDecl.Parent.IsKind(SyntaxKind.ObjectCreationExpression);
+
+                    var isCreatingNewObject = argumentList.Parent.IsKind(SyntaxKind.ObjectCreationExpression);
                     if (isCreatingNewObject)
                     {
-                        // For any type declaration node, create a code action to reverse the identifier text.
-                        var action = CodeAction.Create("Quick mock ctor (Moq)", c => QuickMockCtor(context.Document, typeDecl, c));
+                        var document = context.Document;
+                        var syntaxRoot = await document.GetSyntaxRootAsync(context.CancellationToken);
+                        var semanticModel = await document.GetSemanticModelAsync(context.CancellationToken);
+                        var editor = await DocumentEditor.CreateAsync(document);
+                        var objectCreationExpressionSyntax = argumentList.Parent as ObjectCreationExpressionSyntax;
+                        var ctorSymbol = semanticModel.GetSymbolInfo(objectCreationExpressionSyntax);
 
-                        // Register this code action.
-                        context.RegisterRefactoring(action);
+                        if (ctorSymbol.CandidateSymbols.Any())
+                        {
+                            var ctorMethodSymbols = ctorSymbol.CandidateSymbols.OfType<IMethodSymbol>()
+                                                              .Where(x => x.Parameters.Length > 0);
+                            if (ctorMethodSymbols.Any())
+                            {
+                                //var ctorParameters = (ctorSymbol.CandidateSymbols.ElementAt(0) as IMethodSymbol).Parameters;
+                                //var classToFind = (objectCreationExpressionSyntax.Type as IdentifierNameSyntax).Identifier.ValueText;
+                                //argumentList.Parent.SyntaxTree.GetLineSpan(argumentList.Span);
+                                //var symbols = semanticModel.LookupSymbols();
+
+                                // For any type declaration node, create a code action to reverse the identifier text.
+                                var action = CodeAction.Create("Quick mock ctor (Moq)", c => QuickMockCtor(context.Document, ctorMethodSymbols, argumentList, c));
+
+                                // Register this code action.
+                                context.RegisterRefactoring(action);
+
+                            }
+
+                        }
                     }
                 }
             }
             return;
         }
 
-        private async Task<Document> QuickMockCtor(Document document, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
+        private async Task<Document> QuickMockCtor(Document document, IEnumerable<IMethodSymbol> ctorMethodSymbols, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
         {
-            //var r = typeDecl;
-            //var fileText = typeDecl.Parent.SyntaxTree.GetText().ToString();
-            //var tree = CSharpSyntaxTree.ParseText(fileText);
-            //CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
-            //var identi = ((IdentifierNameSyntax)((ObjectCreationExpressionSyntax)((SyntaxNode)typeDecl).Parent).Type).Identifier;
-            //var item = document.Project.Solution.GetDocumentIdsWithFilePath();
-            // Get the symbol representing the type to be renamed.
-
-            var objectCreationExpressionSyntax = argumentList.Parent as ObjectCreationExpressionSyntax;
-            var classToFind = (objectCreationExpressionSyntax.Type as IdentifierNameSyntax).Identifier.ValueText;
-
-            var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
-            var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
-            var decendantsIdentifierNameSyntax = syntaxRoot.DescendantNodes().OfType<IdentifierNameSyntax>();
-
-            var specificIdentifiers = decendantsIdentifierNameSyntax.Where(x => x.Identifier.Text == classToFind);
-
-            var classDefinition = specificIdentifiers.Where(x => semanticModel.GetTypeInfo(x).Type != null).FirstOrDefault();
-
-            if (classDefinition is null)
-                return document; // class not found in the solution, no change.
-
-            var classSyntaxToFindCtorParamters = semanticModel.GetTypeInfo(classDefinition)
-                                                               .Type
-                                                               ?.DeclaringSyntaxReferences
-                                                               .FirstOrDefault()
-                                                               .GetSyntax();
-            
-            // phase one, mock the biggest ctor (can be improve later)
-            var ctorWithMostParameters = classSyntaxToFindCtorParamters
-                                                            .DescendantNodes()
-                                                            .OfType<ConstructorDeclarationSyntax>()
-                                                            // find the biggest constructor
-                                                            .OrderByDescending(x => x.ParameterList.Parameters.Count)
-                                                            .FirstOrDefault();
-
-            var ctorParameters = ctorWithMostParameters?.ParameterList.Parameters;
-            if (ctorParameters is null)
-                return document; 
+            // phase one, mock the biggest ctor (can be improved later)
+            // also, one should validate if the parameters are all reference types because
+            //       Moq does not allow eg: `new Hero(Mock.Of<string>(), Mock.Of<bool>());`
+            var ctorWithMostParameters = ctorMethodSymbols.Select(x => x.Parameters).OrderByDescending(x => x.Length).First();
 
             var changedList = new List<string>();
-            foreach (var ctorParameter in ctorParameters)
+            foreach (var paramSymbol in ctorWithMostParameters)
             {
-                var paramLine = ctorParameter.GetText().Container.CurrentText.ToString();
-                var paramType = paramLine.Split(" ".ToArray()).FirstOrDefault();
-                var moqString = $"Mock.Of<{paramType}>()";
+                var moqString = $"Mock.Of<{paramSymbol}>()";
                 changedList.Add(moqString);
             }
-            
+
             if (changedList.Any())
             {
                 var editor = await DocumentEditor.CreateAsync(document);
@@ -111,7 +97,77 @@ namespace CodeRefactoring1
             }
 
             // no change detected
-            return document; 
+            return document;
+
+            //var r = typeDecl;
+            //var fileText = typeDecl.Parent.SyntaxTree.GetText().ToString();
+            //var tree = CSharpSyntaxTree.ParseText(fileText);
+            //CompilationUnitSyntax root = tree.GetCompilationUnitRoot();
+            //var identi = ((IdentifierNameSyntax)((ObjectCreationExpressionSyntax)((SyntaxNode)typeDecl).Parent).Type).Identifier;
+            //var item = document.Project.Solution.GetDocumentIdsWithFilePath();
+            // Get the symbol representing the type to be renamed.
+
+            //var objectCreationExpressionSyntax = argumentList.Parent as ObjectCreationExpressionSyntax;
+            //var classToFind = (objectCreationExpressionSyntax.Type as IdentifierNameSyntax).Identifier.ValueText;
+
+            //var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
+            //var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
+            //var decendantsIdentifierNameSyntax = syntaxRoot.DescendantNodes().OfType<IdentifierNameSyntax>();
+
+            //var specificIdentifiers = decendantsIdentifierNameSyntax.Where(x => x.Identifier.Text == classToFind);
+
+            //var classDefinition = specificIdentifiers.Where(x => semanticModel.GetTypeInfo(x).Type != null).FirstOrDefault();
+
+            //if (classDefinition is null)
+            //    return document; // class not found in the solution, no change.
+
+            //var classSyntaxToFindCtorParamters = semanticModel.GetTypeInfo(classDefinition)
+            //                                                   .Type
+            //                                                   ?.DeclaringSyntaxReferences
+            //                                                   .FirstOrDefault()
+            //                                                   .GetSyntax();
+
+            //// phase one, mock the biggest ctor (can be improve later)
+            //var ctorWithMostParameters = classSyntaxToFindCtorParamters
+            //                                                .DescendantNodes()
+            //                                                .OfType<ConstructorDeclarationSyntax>()
+            //                                                // find the biggest constructor
+            //                                                .OrderByDescending(x => x.ParameterList.Parameters.Count)
+            //                                                .FirstOrDefault();
+
+            //var ctorParameters = ctorWithMostParameters?.ParameterList.Parameters;
+            //if (ctorParameters is null)
+            //    return document;
+
+            //var changedList = new List<string>();
+            //foreach (var ctorParameter in ctorParameters)
+            //{
+            //    var paramLine = ctorParameter.GetText().Container.CurrentText.ToString();
+            //    var paramType = paramLine.Split(" ".ToArray()).FirstOrDefault();
+            //    var moqString = $"Mock.Of<{paramType}>()";
+            //    changedList.Add(moqString);
+            //}
+
+            //if (changedList.Any())
+            //{
+            //    var editor = await DocumentEditor.CreateAsync(document);
+
+            //    var modifiedArguments = new SeparatedSyntaxList<ArgumentSyntax>().AddRange
+            //    (
+            //        new ArgumentSyntax[]
+            //        {
+            //            SyntaxFactory.Argument(SyntaxFactory.ParseExpression($"{string.Join($", ", changedList)}")),
+            //        }
+            //    );
+
+            //    var modifiedArgumentList = SyntaxFactory.ArgumentList(modifiedArguments);
+            //    editor.ReplaceNode(argumentList, modifiedArgumentList);
+            //    var changedDoc = editor.GetChangedDocument();
+            //    return changedDoc;
+            //}
+
+            //// no change detected
+            //return document;
 
             //var rewriter = new AttributeStatementChanger();
 
