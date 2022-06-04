@@ -31,9 +31,7 @@ namespace CodeRefactoring1
                     if (isCreatingNewObject)
                     {
                         var document = context.Document;
-                        var syntaxRoot = await document.GetSyntaxRootAsync(context.CancellationToken);
                         var semanticModel = await document.GetSemanticModelAsync(context.CancellationToken);
-                        var editor = await DocumentEditor.CreateAsync(document);
                         var objectCreationExpressionSyntax = argumentList.Parent as ObjectCreationExpressionSyntax;
                         var ctorSymbol = semanticModel.GetSymbolInfo(objectCreationExpressionSyntax);
 
