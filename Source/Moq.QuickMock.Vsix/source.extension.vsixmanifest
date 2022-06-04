@@ -3,7 +3,7 @@
   <Metadata>
     <Identity Id="Moq.QuickMock..720a9fb5-a573-4276-9e62-5c94b0816cee" Version="1.0" Language="en-US" Publisher="Ruan Beukes"/>
     <DisplayName>Moq.QuickMock</DisplayName>
-    <Description xml:space="preserve">This is a sample code refactoring extension for the .NET Compiler Platform ("Roslyn").</Description>
+    <Description xml:space="preserve">This refactoring extension is used in unit tests, with Moq.</Description>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,18.0)">
