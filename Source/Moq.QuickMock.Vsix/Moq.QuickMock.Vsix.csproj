@@ -5,7 +5,7 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <RootNamespace>Moq.QuickMock.Vsix</RootNamespace>
-    <AssemblyName>Moq.QuickMock</AssemblyName>
+    <AssemblyName>Moq.QuickMock.Vsix</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup>
