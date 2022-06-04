@@ -30,3 +30,27 @@ Various resources:
 - https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.csharp.syntax.objectcreationexpressionsyntax?view=roslyn-dotnet-4.2.0
 - https://www.filipekberg.se/2011/10/20/using-roslyn-to-parse-c-code-files/
 - https://blog.emirosmanoski.mk/2020-11-02-Roslyn-Roslyn-Analyzer-Part2/
+
+
+## Toubleshoot
+
+After creating a new VS solution via template `Code Refactor (.NET Standard)`, it could not build.
+
+Fix it by navigating to `C:\Users\{YourUser}\.nuget\packages\microsoft.vssdk.buildtools` and replaced the latest verion number found there.
+In my case: `15.1.192` => `17.1.4058`.
+
+Open the solution folder and replaced all `15.1.192` occurrences with `17.1.4058`.
+
+Error:
+```
+Build started...
+1>------ Build started: Project: Moq.QuickMock, Configuration: Debug Any CPU ------
+1>Skipping analyzers to speed up the build. You can execute 'Build' or 'Rebuild' command to run analyzers.
+1>Moq.QuickMock -> C:\Ru\Moq.QuickMock\Moq.QuickMock\Moq.QuickMock\bin\Debug\netstandard2.0\Moq.QuickMock.dll
+2>------ Build started: Project: Moq.QuickMock.Vsix, Configuration: Debug Any CPU ------
+2>C:\Users\BlahBlah\.nuget\packages\microsoft.vssdk.buildtools\15.1.192\tools\VSSDK\Microsoft.VsSDK.targets(84,5): error MSB4062: The "CompareBuildTaskVersion" task could not be loaded from the assembly C:\Users\BlahBlah\.nuget\packages\microsoft.vssdk.buildtools\15.1.192\tools\VSSDK\Microsoft.VisualStudio.Sdk.BuildTasks.15.0.dll. Could not load file or assembly 'file:///C:\Users\BlahBlah\.nuget\packages\microsoft.vssdk.buildtools\15.1.192\tools\VSSDK\Microsoft.VisualStudio.Sdk.BuildTasks.15.0.dll' or one of its dependencies. An attempt was made to load a program with an incorrect format. Confirm that the <UsingTask> declaration is correct, that the assembly and all its dependencies are available, and that the task contains a public class that implements Microsoft.Build.Framework.ITask.
+2>Done building project "Moq.QuickMock.Vsix.csproj" -- FAILED.
+CodeRush canceled the build because project Moq.QuickMock\Moq.QuickMock.Vsix\Moq.QuickMock.Vsix.csproj failed to build. You can disable this behavior in the CodeRush options on the IDE\Build options page.
+Build has been canceled.
+```
+
