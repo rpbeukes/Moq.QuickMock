@@ -23,7 +23,7 @@ https://marketplace.visualstudio.com/
 - https://stackoverflow.com/questions/69274658/github-action-nuget-restore-net-4-7-2
 - https://cezarypiatek.github.io/post/develop-vsextension-with-github-actions/
 
-Various resources:
+## Various resources:
 - Google `mads kristensen extensions` 
 - https://stackoverflow.com/questions/43804765/roslyn-get-identifiername-in-objectcreationexpressionsyntax
 - https://docs.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/get-started/syntax-transformation
@@ -52,5 +52,21 @@ Build started...
 2>Done building project "Moq.QuickMock.Vsix.csproj" -- FAILED.
 CodeRush canceled the build because project Moq.QuickMock\Moq.QuickMock.Vsix\Moq.QuickMock.Vsix.csproj failed to build. You can disable this behavior in the CodeRush options on the IDE\Build options page.
 Build has been canceled.
+```
+
+---
+
+## Make extension a VS2022 one
+
+update `source.extension.vsixmanifest`:
+
+```
+  ...
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,18.0)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
+  </Installation>
+  ...
 ```
 
