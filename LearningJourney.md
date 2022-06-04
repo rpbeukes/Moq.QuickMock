@@ -3,9 +3,9 @@ This is my first attempt at a Visual Studio Extension.
 Let the fun begin :)
 
 ## Fantastic resource:
-Google: `mads kristensen extensions` 
+Google: [mads kristensen extensions](https://www.google.com/search?q=mads+kristensen+extensions&rlz=1C1RXQR_en-GBAU944AU944&oq=mads+kristensen+extensions&aqs=chrome..69i57.264j0j7&sourceid=chrome&ie=UTF-8)
 
-## Market place
+## Visual Studio Extensions Market Place
 https://marketplace.visualstudio.com/
 
 ## Download
@@ -13,7 +13,7 @@ https://marketplace.visualstudio.com/
 
 ## Github
 - [mads](https://github.com/madskristensen)
-- [moq.autocomplete](https://github.com/Litee/moq.autocomplete)
+- [moq.autocomplete](https://github.com/Litee/moq.autocomplete) - thanx to Litee (Andrey Lipatkin)
 
 Various resources:
 - Google `mads kristensen extensions` 
