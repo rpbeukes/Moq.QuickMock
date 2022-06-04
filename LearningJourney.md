@@ -15,6 +15,11 @@ https://marketplace.visualstudio.com/
 - [mads](https://github.com/madskristensen)
 - [moq.autocomplete](https://github.com/Litee/moq.autocomplete) - thanx to Litee (Andrey Lipatkin)
 
+## Github Actions - Build Pipeline
+[microsoft/setup-msbuild](https://github.com/microsoft/setup-msbuild)
+[actions/upload-artifact](https://github.com/actions/upload-artifact)
+https://cezarypiatek.github.io/post/develop-vsextension-with-github-actions/
+
 Various resources:
 - Google `mads kristensen extensions` 
 - https://stackoverflow.com/questions/43804765/roslyn-get-identifiername-in-objectcreationexpressionsyntax
