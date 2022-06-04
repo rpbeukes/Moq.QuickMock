@@ -24,10 +24,13 @@ jobs:
         uses: nuget/setup-nuget@v1
         with:
           nuget-version: '6.x'
+      
+      - name: nuget restore
         run: nuget restore .\Moq.QuickMock.sln
       
       - name: build solution
-        run:  msbuild .\Moq.QuickMock.sln -t:rebuild -verbosity:diag -property:Configuration=Release
+        #run:  msbuild .\Moq.QuickMock.sln -t:rebuild -verbosity:diag -property:Configuration=Release
+        run:  msbuild .\Moq.QuickMock.sln -t:rebuild -property:Configuration=Release
 
       - name: create artifact
         uses: actions/upload-artifact@v3
