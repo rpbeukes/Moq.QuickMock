@@ -1,5 +1,6 @@
 #  Visual Studio Extensions
 This is my first attempt at a Visual Studio Extension.
+
 Let the fun begin :)
 
 ## Fantastic resource:
@@ -16,9 +17,10 @@ https://marketplace.visualstudio.com/
 - [moq.autocomplete](https://github.com/Litee/moq.autocomplete) - thanx to Litee (Andrey Lipatkin)
 
 ## Github Actions - Build Pipeline
-[microsoft/setup-msbuild](https://github.com/microsoft/setup-msbuild)
-[actions/upload-artifact](https://github.com/actions/upload-artifact)
-https://cezarypiatek.github.io/post/develop-vsextension-with-github-actions/
+- [microsoft/setup-msbuild](https://github.com/microsoft/setup-msbuild)
+- [actions/upload-artifact](https://github.com/actions/upload-artifact)
+- https://stackoverflow.com/questions/69274658/github-action-nuget-restore-net-4-7-2
+- https://cezarypiatek.github.io/post/develop-vsextension-with-github-actions/
 
 Various resources:
 - Google `mads kristensen extensions` 
