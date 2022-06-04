@@ -44,19 +44,11 @@ namespace CodeRefactoring1
                                                               .Where(x => x.Parameters.Length > 0);
                             if (ctorMethodSymbols.Any())
                             {
-                                //var ctorParameters = (ctorSymbol.CandidateSymbols.ElementAt(0) as IMethodSymbol).Parameters;
-                                //var classToFind = (objectCreationExpressionSyntax.Type as IdentifierNameSyntax).Identifier.ValueText;
-                                //argumentList.Parent.SyntaxTree.GetLineSpan(argumentList.Span);
-                                //var symbols = semanticModel.LookupSymbols();
-
-                                // For any type declaration node, create a code action to reverse the identifier text.
                                 var action = CodeAction.Create("Quick mock ctor (Moq)", c => QuickMockCtor(context.Document, ctorMethodSymbols, argumentList, c));
 
                                 // Register this code action.
                                 context.RegisterRefactoring(action);
-
                             }
-
                         }
                     }
                 }
