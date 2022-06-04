@@ -27,7 +27,6 @@ namespace CodeRefactoring1
             {
                 if (node is ArgumentListSyntax argumentList)
                 {
-
                     var isCreatingNewObject = argumentList.Parent.IsKind(SyntaxKind.ObjectCreationExpression);
                     if (isCreatingNewObject)
                     {
