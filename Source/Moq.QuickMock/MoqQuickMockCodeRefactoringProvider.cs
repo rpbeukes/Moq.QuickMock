@@ -31,7 +31,7 @@ namespace CodeRefactoring1
                     if (isCreatingNewObject)
                     {
                         // For any type declaration node, create a code action to reverse the identifier text.
-                        var action = CodeAction.Create("Quick mock ctor", c => CreateMoqQuickMockCtor(context.Document, typeDecl, c));
+                        var action = CodeAction.Create("Quick mock ctor (Moq)", c => QuickMockCtor(context.Document, typeDecl, c));
 
                         // Register this code action.
                         context.RegisterRefactoring(action);
@@ -41,7 +41,7 @@ namespace CodeRefactoring1
             return;
         }
 
-        private async Task<Document> CreateMoqQuickMockCtor(Document document, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
+        private async Task<Document> QuickMockCtor(Document document, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
         {
             //var r = typeDecl;
             //var fileText = typeDecl.Parent.SyntaxTree.GetText().ToString();
