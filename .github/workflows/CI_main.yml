@@ -20,6 +20,12 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v3
       
+      - name: setup nuget
+        uses: nuget/setup-nuget@v1
+        with:
+          nuget-version: '6.x'
+        run: nuget restore .\Moq.QuickMock.sln
+      
       - name: build solution
         run:  msbuild .\Moq.QuickMock.sln -t:rebuild -verbosity:diag -property:Configuration=Release
 
