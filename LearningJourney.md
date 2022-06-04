@@ -18,6 +18,7 @@ https://marketplace.visualstudio.com/
 
 ## Github Actions - Build Pipeline
 - [microsoft/setup-msbuild](https://github.com/microsoft/setup-msbuild)
+- [setup-nuget](https://github.com/NuGet/setup-nuget)
 - [actions/upload-artifact](https://github.com/actions/upload-artifact)
 - https://stackoverflow.com/questions/69274658/github-action-nuget-restore-net-4-7-2
 - https://cezarypiatek.github.io/post/develop-vsextension-with-github-actions/
