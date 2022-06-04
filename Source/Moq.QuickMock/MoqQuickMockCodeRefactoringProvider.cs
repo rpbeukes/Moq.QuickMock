@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CodeRefactoring1
+namespace Moq.QuickMock
 {
     [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(MoqQuickMockCodeRefactoringProvider)), Shared]
     internal class MoqQuickMockCodeRefactoringProvider : CodeRefactoringProvider
