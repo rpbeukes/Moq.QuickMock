@@ -1,2 +1,3 @@
 # Moq.QuickMock
-Visual Studio extention to help with Moq tests.
+Small Visual Studio extension to help with [Moq](https://github.com/moq/moq) tests.
+
