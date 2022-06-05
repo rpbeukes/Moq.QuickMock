@@ -31,9 +31,10 @@ Google: [mads kristensen extensions](https://www.google.com/search?q=mads+kriste
 - https://www.filipekberg.se/2011/10/20/using-roslyn-to-parse-c-code-files/
 - https://blog.emirosmanoski.mk/2020-11-02-Roslyn-Roslyn-Analyzer-Part2/
 
-
+---
 ## Toubleshoot
 
+### VS Template build issue
 After creating a new VS solution via template `Code Refactor (.NET Standard)`, it could not build.
 
 Fix it by navigating to `C:\Users\{YourUser}\.nuget\packages\microsoft.vssdk.buildtools` and replaced the latest verion number found there.
@@ -56,7 +57,7 @@ Build has been canceled.
 
 ---
 
-## Make extension a VS2022 one
+### Make extension a VS2022 one
 
 update `source.extension.vsixmanifest`:
 
@@ -70,3 +71,24 @@ update `source.extension.vsixmanifest`:
   ...
 ```
 
+---
+
+### VS Extension debugger stopped working (does not hit breakpoints)
+
+Found very good help from Microsoft's [Troubleshoot Breakpoints in the Visual Studio Debugger](https://docs.microsoft.com/en-us/visualstudio/debugger/troubleshooting-breakpoints?view=vs-2022).
+
+> Go to the Modules window (Debug > Windows > Modules) and check whether your module is loaded.
+
+- In the searchbox, I typed `moq.`, and I saw that `Symbol Status` indicated: `file not found`.
+- Then `Right-Clicked` on my file and choose `Open File Location`.
+- Then dig around in there, and deleted my whole folder 
+  eg: `C:\Users\{YourUser}}\AppData\Local\Microsoft\VisualStudio\17.0_ad6c95ffRoslyn`
+- It seemed like a new VS Instance, with the correct extensions and now it knows how to load the symbols again. 
+
+More options [here](https://github.com/dotnet/roslyn-sdk/issues/889#issuecomment-929608681) on github to solve the issue a different way.
+I left my [solution](https://github.com/dotnet/roslyn-sdk/issues/889#issuecomment-1146767006) on that thread too.
+
+
+Investigation tools: 
+- [ms sysinternals](https://docs.microsoft.com/en-us/sysinternals/)
+-  [Microsoft Child Process Debugging Power Tool 2022](https://marketplace.visualstudio.com/items?itemName=vsdbgplat.MicrosoftChildProcessDebuggingPowerTool2022)
