@@ -6,8 +6,8 @@ Let the fun begin :)
 ## Fantastic resource:
 Google: [mads kristensen extensions](https://www.google.com/search?q=mads+kristensen+extensions&rlz=1C1RXQR_en-GBAU944AU944&oq=mads+kristensen+extensions&aqs=chrome..69i57.264j0j7&sourceid=chrome&ie=UTF-8)
 
-## Visual Studio Extensions Market Place
-https://marketplace.visualstudio.com/
+## Visual Studio Extensions Marketplace
+[Marketplace](https://marketplace.visualstudio.com/)
 
 ## Download
 - [Extensibility Essentials 2022](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.ExtensibilityEssentials2022)
