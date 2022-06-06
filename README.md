@@ -53,8 +53,6 @@ Find `Quick mock ctor (Moq)` Refactor Menu Options:
 ---
 
 ## Know issues
--  Moq only allows reference types for `T` when using `Mock.Of<T>`.
-  Currently, the extension will generate incorrect code like this eg: `new Hero(Mock.Of<string>(), Mock.Of<bool>());`; the `bool` is wrong.
 - Extension generates `Fully qualified type` names.
   eg:
 ```
