@@ -63,8 +63,22 @@ namespace Moq.QuickMock
             var changedList = new List<string>();
             foreach (var paramSymbol in ctorWithMostParameters)
             {
-                var moqString = $"Mock.Of<{paramSymbol}>()";
-                changedList.Add(moqString);
+                var paramType = paramSymbol.Type;
+                // will stick to fully named qualifiers as scenario `Func<SomeType>` fails.
+                // var paramName = paramSymbol.Type.Name; 
+                if (paramType.IsReferenceType)
+                {
+                    var moqString = $"Mock.Of<{paramSymbol}>()";
+                    changedList.Add(moqString);
+                }
+                else if (paramType.IsValueType)
+                {
+                    changedList.Add($"It.IsAny<{paramSymbol}>()");  
+                }
+                else
+                {
+                    changedList.Add($" "); // dont know what to do here, user should look closer and fix.
+                }
             }
 
             if (changedList.Any())
