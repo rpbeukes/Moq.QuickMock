@@ -11,6 +11,7 @@ Google: [mads kristensen extensions](https://www.google.com/search?q=mads+kriste
 
 ## Download
 - [Extensibility Essentials 2022](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.ExtensibilityEssentials2022)
+- [Known Monikers Explorer 2022](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.KnownMonikersExplorer2022)
 
 ## Github
 - [mads](https://github.com/madskristensen)
