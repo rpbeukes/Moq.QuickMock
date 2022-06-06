@@ -6,6 +6,8 @@ Let the fun begin :)
 ## Fantastic resource:
 Google: [mads kristensen extensions](https://www.google.com/search?q=mads+kristensen+extensions&rlz=1C1RXQR_en-GBAU944AU944&oq=mads+kristensen+extensions&aqs=chrome..69i57.264j0j7&sourceid=chrome&ie=UTF-8)
 
+[Visual Studio Extensibility Cookbook](https://www.vsixcookbook.com/getting-started/your-first-extension.html)
+
 ## Visual Studio Extensions Marketplace
 [Marketplace](https://marketplace.visualstudio.com/)
 
@@ -25,7 +27,6 @@ Google: [mads kristensen extensions](https://www.google.com/search?q=mads+kriste
 - https://cezarypiatek.github.io/post/develop-vsextension-with-github-actions/
 
 ## Various resources:
-- Google `mads kristensen extensions` 
 - https://stackoverflow.com/questions/43804765/roslyn-get-identifiername-in-objectcreationexpressionsyntax
 - https://docs.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/get-started/syntax-transformation
 - https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.csharp.syntax.objectcreationexpressionsyntax?view=roslyn-dotnet-4.2.0
