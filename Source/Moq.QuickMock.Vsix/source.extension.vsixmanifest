@@ -4,6 +4,8 @@
     <Identity Id="Moq.QuickMock..a1fd9319-baa0-4dd5-9ff1-ab119bd54180" Version="1.0" Language="en-US" Publisher="Ruan Beukes"/>
     <DisplayName>Moq.QuickMock</DisplayName>
     <Description xml:space="preserve">This refactoring extension is used in unit tests, with Moq.</Description>
+    <Icon>Resouces\Refactoring32.png</Icon>
+    <PreviewImage>Resouces\Refactoring32.png</PreviewImage>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,18.0)">

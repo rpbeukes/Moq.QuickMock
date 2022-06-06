@@ -37,6 +37,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Resources\Refactoring32.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- https://github.com/dotnet/sdk/issues/433 -->
     <ProjectReference Update="@(ProjectReference)" AdditionalProperties="TargetFramework=netstandard2.0" />
 
