@@ -5,8 +5,8 @@
     <DisplayName>Moq.QuickMock 2022</DisplayName>
     <Description xml:space="preserve">This refactoring extension is used in unit tests, with Moq.</Description>
     <MoreInfo>https://github.com/rpbeukes/Moq.QuickMock</MoreInfo>
-    <Icon>Resouces\Refactoring32.png</Icon>
-    <PreviewImage>Resouces\Refactoring32.png</PreviewImage>
+    <Icon>Resources\Refactoring128.png</Icon>
+    <PreviewImage>Resources\Refactoring128.png</PreviewImage>
     <Tags>vsix, moq, quickmock</Tags>
   </Metadata>
   <Installation>
