@@ -1,7 +1,7 @@
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/rpbeukes/Moq.QuickMock/CI/main)](https://github.com/rpbeukes/Moq.QuickMock/actions/workflows/CI_main.yml?query=branch%3Amain+) [![GitHub](https://img.shields.io/github/license/rpbeukes/Moq.QuickMock)](https://github.com/rpbeukes/Moq.QuickMock/blob/main/LICENSE)
 
 # Moq.QuickMock
-Small Visual Studio 2022 extension to help with [Moq](https://github.com/moq/moq) tests.
+Small Visual Studio 2022 extension to help with C# [Moq](https://github.com/moq/moq) tests.
 
 ---
 
@@ -11,23 +11,41 @@ Extension will change code from this:
 
 **MyTests.cs**:
 ```
-[TestClass()]
-public class TheTestFunction()
+...
+[TestMethod()]
+public void TheTestFunction()
 {
     var r = new CodeWithBigConstructor();
 }
+...
 ```
 
 to this:
 
 **MyTests.cs**:
 ```
-[TestClass()]
-public class TheTestFunction()
+...
+[TestMethod()]
+public void TheTestFunction()
 {
     var r = new CodeWithBigConstructor(Mock.Of<ILogger<CodeWithBigConstructor>>(), Mock.Of<ISecureUser>(), Mock.Of<Func<SomeCoolFunction>>());
 }
+...
 ```
+
+**CodeWithBigConstructor.cs**:
+```
+public class CodeWithBigConstructor
+{
+    public CodeWithBigConstructor(ILogger<CodeWithBigConstructor> logger,
+                                  ISecureUser secureUser,
+                                  Func<SomeCoolFunction> factory)
+    {
+        
+    }
+}
+```
+
 ---
 
 **NOTE:** This extension will only change code following the file naming convention `*tests.cs` eg: `TheseAreMyHeroTests.cs`.
