@@ -17,6 +17,8 @@ Google: [mads kristensen extensions](https://www.google.com/search?q=mads+kriste
 
 ## Github
 - [mads](https://github.com/madskristensen)
+- [RefactoringEssentials](https://github.com/icsharpcode/RefactoringEssentials) - thanx to icsharpcode community.
+
 - [moq.autocomplete](https://github.com/Litee/moq.autocomplete) - thanx to Litee (Andrey Lipatkin)
 
 ## Github Actions - Build Pipeline
@@ -27,6 +29,7 @@ Google: [mads kristensen extensions](https://www.google.com/search?q=mads+kriste
 - https://cezarypiatek.github.io/post/develop-vsextension-with-github-actions/
 
 ## Various resources:
+- https://roslynquoter.azurewebsites.net/
 - https://stackoverflow.com/questions/43804765/roslyn-get-identifiername-in-objectcreationexpressionsyntax
 - https://docs.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/get-started/syntax-transformation
 - https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.csharp.syntax.objectcreationexpressionsyntax?view=roslyn-dotnet-4.2.0
