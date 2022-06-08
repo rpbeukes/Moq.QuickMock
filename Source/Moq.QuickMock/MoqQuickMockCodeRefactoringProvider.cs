@@ -4,6 +4,8 @@ using Microsoft.CodeAnalysis.CodeRefactorings;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
+using Microsoft.CodeAnalysis.Formatting;
+using Microsoft.CodeAnalysis.Simplification;
 using System.Collections.Generic;
 using System.Composition;
 using System.Linq;
@@ -13,12 +15,12 @@ using System.Threading.Tasks;
 namespace Moq.QuickMock
 {
     [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(MoqQuickMockCodeRefactoringProvider)), Shared]
-    internal class MoqQuickMockCodeRefactoringProvider : CodeRefactoringProvider
+    public class MoqQuickMockCodeRefactoringProvider : CodeRefactoringProvider
     {
-        public sealed override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
+        public override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
-
+            
             // Find the node at the selection.
             var node = root.FindNode(context.Span);
 
@@ -34,23 +36,39 @@ namespace Moq.QuickMock
                         var semanticModel = await document.GetSemanticModelAsync(context.CancellationToken);
                         var objectCreationExpressionSyntax = argumentList.Parent as ObjectCreationExpressionSyntax;
                         var ctorSymbol = semanticModel.GetSymbolInfo(objectCreationExpressionSyntax);
-
+                        
                         if (ctorSymbol.CandidateSymbols.Any())
                         {
                             var ctorMethodSymbols = ctorSymbol.CandidateSymbols.OfType<IMethodSymbol>()
                                                               .Where(x => x.Parameters.Length > 0);
                             if (ctorMethodSymbols.Any())
                             {
-                                var action = CodeAction.Create("Quick mock ctor (Moq)", c => QuickMockCtor(context.Document, ctorMethodSymbols, argumentList, c));
-
+                                var quickMockCtorAction = CodeAction.Create("Quick mock ctor (Moq)", c => QuickMockCtor(context.Document, ctorMethodSymbols, argumentList, c));
+                                var mockCtorAction = CodeAction.Create("Mock ctor (Moq)", c => MockMoq(context.Document, ctorMethodSymbols, argumentList, c));
+                                
                                 // Register this code action.
-                                context.RegisterRefactoring(action);
+                                context.RegisterRefactoring(quickMockCtorAction);
+                                context.RegisterRefactoring(mockCtorAction);
                             }
                         }
                     }
                 }
             }
             return;
+        }
+        private async Task<Document> MockMoq(Document document, IEnumerable<IMethodSymbol> ctorMethodSymbols, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
+        {
+            //argumentList.Span
+            
+            var ctorWithMostParameters = ctorMethodSymbols.Select(x => x.Parameters).OrderByDescending(x => x.Length).First();
+            var statements = new List<StatementSyntax>();
+            StatementSyntax newVar = SyntaxFactory.ParseStatement("var theNewVar;").WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation);
+            //var rrr = argumentList.InsertNodesBefore();
+            var editor = await DocumentEditor.CreateAsync(document);
+            //var intSyntax = SyntaxFactory.LocalDeclarationStatement(SyntaxFactory.VariableDeclaration());
+            //editor.Generator.
+            var changedDoc = editor.GetChangedDocument();
+            return changedDoc;
         }
 
         private async Task<Document> QuickMockCtor(Document document, IEnumerable<IMethodSymbol> ctorMethodSymbols, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
@@ -73,7 +91,7 @@ namespace Moq.QuickMock
                 }
                 else if (paramType.IsValueType)
                 {
-                    changedList.Add($"It.IsAny<{paramSymbol}>()");  
+                    changedList.Add($"It.IsAny<{paramSymbol}>()");
                 }
                 else
                 {
