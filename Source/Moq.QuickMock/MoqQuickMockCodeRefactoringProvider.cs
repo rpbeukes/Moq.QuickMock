@@ -45,7 +45,7 @@ namespace Moq.QuickMock
                             if (ctorMethodSymbols.Any())
                             {
                                 var quickMockCtorAction = CodeAction.Create("Quick mock ctor (Moq)", c => QuickMockCtor(context.Document, ctorMethodSymbols, argumentList, c));
-                                var mockCtorAction = CodeAction.Create("Mock ctor (Moq)", c => MockMoq(root, context.Document, ctorMethodSymbols, argumentList, c));
+                                var mockCtorAction = CodeAction.Create("Mock ctor (Moq)", c => MockMoq(context.Document, ctorMethodSymbols, argumentList, c));
 
                                 // Register this code action.
                                 context.RegisterRefactoring(quickMockCtorAction);
@@ -57,74 +57,54 @@ namespace Moq.QuickMock
             }
             return;
         }
-        private async Task<Document> MockMoq(SyntaxNode root, Document document, IEnumerable<IMethodSymbol> ctorMethodSymbols, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
+        private async Task<Document> MockMoq(Document document, IEnumerable<IMethodSymbol> ctorMethodSymbols, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
         {
-            try
-            {
-                var ctorWithMostParameters = ctorMethodSymbols.Select(x => x.Parameters).OrderByDescending(x => x.Length).First();
+            var ctorWithMostParameters = ctorMethodSymbols.Select(x => x.Parameters).OrderByDescending(x => x.Length).First();
 
-                var newVarList = new List<StatementSyntax>();
-                var newArgsList = new List<string>();
-                foreach (var paramSymbol in ctorWithMostParameters)
+            var newVarList = new List<StatementSyntax>();
+            var newArgsList = new List<string>();
+            foreach (var paramSymbol in ctorWithMostParameters)
+            {
+                var paramType = paramSymbol.Type;
+                var isString = paramType.Name.ToLowerInvariant() == "string";
+                if (!isString && paramType.IsReferenceType)
                 {
-                    var paramType = paramSymbol.Type;
-                    // will stick to fully named qualifiers as scenario `Func<SomeType>` fails.
-                    // var paramName = paramSymbol.Type.Name; 
-                    if (paramType.IsReferenceType)
-                    {
-                        var newVarName = $"{paramSymbol.Name}Mock";
-                        var declaringStatement = $"var {newVarName} = new Mock<{paramSymbol.Type}>();{Environment.NewLine}";
-                        var newVar = SyntaxFactory.ParseStatement(declaringStatement)
-                                         .WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation);
-                        newVarList.Add(newVar);
-                        newArgsList.Add($"{newVarName}.Object");
-                    }
-                    else if (paramType.IsValueType)
-                    {
-                        newArgsList.Add($"It.IsAny<{paramSymbol}>()");
-                    }
-                    else
-                    {
-                        newArgsList.Add($" "); // dont know what to do here, user should look closer and fix.
-                    }
+                    var newVarName = $"{paramSymbol.Name}Mock";
+                    var declaringStatement = $"var {newVarName} = new Mock<{paramSymbol.Type}>();{Environment.NewLine}";
+                    var newVar = SyntaxFactory.ParseStatement(declaringStatement)
+                                     // this seems to be the magic to remove Full Qualified Names
+                                     .WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation);
+                    newVarList.Add(newVar);
+                    newArgsList.Add($"{newVarName}.Object");
                 }
-                //var paramSymbol = ctorWithMostParameters[0];
-                //var newVar = SyntaxFactory.ParseStatement($"var {paramSymbol.Name}Mock = new Mock<{paramSymbol.Type}>();{Environment.NewLine}")
-                //                          .WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation);
+                else if (isString || paramType.IsValueType)
+                {
+                    newArgsList.Add($"It.IsAny<{paramSymbol}>()");
+                }
+                else
+                {
+                    newArgsList.Add($" "); // dont know what to do here, user should look closer and fix.
+                }
+            }
 
-
-
-
-                var editor = await DocumentEditor.CreateAsync(document);
-                //var localVar = SyntaxFactory.LocalDeclarationStatement(
-                //    SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
-                //                 .AddVariables(SyntaxFactory.VariableDeclarator("theNewVar")));
-
-                var modifiedArguments = new SeparatedSyntaxList<ArgumentSyntax>().AddRange
-                (
-                    new ArgumentSyntax[]
-                    {
+            var editor = await DocumentEditor.CreateAsync(document);
+            
+            var modifiedArguments = new SeparatedSyntaxList<ArgumentSyntax>().AddRange
+            (
+                new ArgumentSyntax[]
+                {
                         SyntaxFactory.Argument(SyntaxFactory.ParseExpression($"{string.Join($", ", newArgsList)}"))
-                    }
-                );
+                }
+            );
 
-                var modifiedArgumentList = SyntaxFactory.ArgumentList(modifiedArguments);
-                editor.ReplaceNode(argumentList, modifiedArgumentList);
+            var modifiedArgumentList = SyntaxFactory.ArgumentList(modifiedArguments);
+            editor.ReplaceNode(argumentList, modifiedArgumentList);
 
-                var location = argumentList.Ancestors().OfType<LocalDeclarationStatementSyntax>().First();
-                editor.InsertBefore(location, newVarList);
+            var location = argumentList.Ancestors().OfType<LocalDeclarationStatementSyntax>().First();
+            editor.InsertBefore(location, newVarList);
 
-                //var newRoot = root.InsertNodesBefore(argumentList, new List<SyntaxNode>() { localVar });
-                //var eee = document.WithSyntaxRoot(localVar);
-                var changedDoc = editor.GetChangedDocument();
-                return changedDoc;
-            }
-            catch (Exception ex)
-            {
-                var d = ex;
-            }
-            return null;
-
+            var changedDoc = editor.GetChangedDocument();
+            return changedDoc;
         }
 
         private async Task<Document> QuickMockCtor(Document document, IEnumerable<IMethodSymbol> ctorMethodSymbols, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
@@ -133,19 +113,20 @@ namespace Moq.QuickMock
             // also, one should validate if the parameters are all reference types because
             //       Moq does not allow eg: `new Hero(Mock.Of<string>(), Mock.Of<bool>());`
             var ctorWithMostParameters = ctorMethodSymbols.Select(x => x.Parameters).OrderByDescending(x => x.Length).First();
-
+            
             var newArgsList = new List<string>();
             foreach (var paramSymbol in ctorWithMostParameters)
             {
                 var paramType = paramSymbol.Type;
                 // will stick to fully named qualifiers as scenario `Func<SomeType>` fails.
                 // var paramName = paramSymbol.Type.Name; 
-                if (paramType.IsReferenceType)
+                var isString = paramType.Name.ToLowerInvariant() == "string";
+                if (!isString && paramType.IsReferenceType)
                 {
                     var moqString = $"Mock.Of<{paramSymbol}>()";
                     newArgsList.Add(moqString);
                 }
-                else if (paramType.IsValueType)
+                else if (isString || paramType.IsValueType)
                 {
                     newArgsList.Add($"It.IsAny<{paramSymbol}>()");
                 }
