@@ -1,7 +1,12 @@
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/rpbeukes/Moq.QuickMock/CI/main)](https://github.com/rpbeukes/Moq.QuickMock/actions/workflows/CI_main.yml?query=branch%3Amain+) [![GitHub](https://img.shields.io/github/license/rpbeukes/Moq.QuickMock)](https://github.com/rpbeukes/Moq.QuickMock/blob/main/LICENSE)
 
 # Moq.QuickMock
-Small Visual Studio 2022 extension to help with C# [Moq](https://github.com/moq/moq) tests.
+Small Visual Studio 2022 extension to help writing C# [Moq](https://github.com/moq/moq) tests.
+
+---
+
+## Download Moq.QuickMock.vsix and install
+Download `Moq.QuickMock.vsix` from latest successful [build](https://github.com/rpbeukes/Moq.QuickMock/actions/workflows/CI_main.yml?query=branch%3Amain+is%3Asuccess).
 
 ---
 
@@ -66,11 +71,6 @@ public class CodeWithBigConstructor
 ---
 
 **NOTE:** This extension will only change code following the file naming convention `*tests.cs` eg: `TheseAreMyHeroTests.cs`.
-
----
-
-## Download Moq.QuickMock.vsix and install
-Download `Moq.QuickMock.vsix` from latest successful [build](https://github.com/rpbeukes/Moq.QuickMock/actions/workflows/CI_main.yml?query=branch%3Amain+is%3Asuccess).
 
 ---
 
