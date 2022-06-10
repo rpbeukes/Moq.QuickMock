@@ -20,7 +20,24 @@ public void TheTestFunction()
 ...
 ```
 
-to this:
+to this via `Mock ctor (Moq)` refactor:
+
+**MyTests.cs**:
+```
+...
+[TestMethod()]
+public void TheTestFunction()
+{
+    var loggerMock = new Mock<ILogger<CodeWithBigConstructor>>();
+    var secureUserMock = new Mock<ISecureUser>();
+    var factoryMock = new Mock<Func<SomeCoolFunction>>();
+
+    var r = new CodeWithBigConstructor(loggerMock.Object, secureUserMock.Object, factoryMock.Object);
+}
+...
+```
+
+or to this via `Quick mock ctor (Moq)` refactor:
 
 **MyTests.cs**:
 ```

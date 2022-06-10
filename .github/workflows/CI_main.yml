@@ -14,11 +14,21 @@ jobs:
     name: build
     runs-on: windows-latest
     steps:
-      - name: add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
-      
       - name: checkout code
         uses: actions/checkout@v3
+
+      - name: get version from source.extension.vsixmanifest
+        run: |
+          $manifestPath = '${{ github.workspace }}\Source\Moq.QuickMock.Vsix\source.extension.vsixmanifest'
+          $manifestXml = [xml](Get-Content $manifestPath -Raw)
+          $version = $manifestXml.PackageManifest.Metadata.Identity.Version + "." + ${{ github.run_number }}
+          echo "APP_VERSION=$version" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+
+      - name: print APP_VERSION
+        run: Write-Host $APP_VERSION
+
+      - name: add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
       
       - name: setup nuget
         uses: nuget/setup-nuget@v1
@@ -32,11 +42,11 @@ jobs:
         #run:  msbuild .\Moq.QuickMock.sln -t:rebuild -verbosity:diag -property:Configuration=Release
         run:  msbuild Moq.QuickMock.sln -t:rebuild -property:Configuration=Release
 
-      - name: rename Moq.QuickMock.Vsix.vsix to Moq.QuickMock.vsix
-        run:  ren ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock.Vsix.vsix Moq.QuickMock.vsix
+      - name: rename Moq.QuickMock.Vsix.vsix to Moq.QuickMock.W.X.Y.Z.vsix
+        run:  ren ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock.Vsix.vsix Moq.QuickMock.${{ env.APP_VERSION }}.vsix
 
       - name: create artifact
         uses: actions/upload-artifact@v3
         with:
-          name: Moq.QuickMock.vsix
-          path: ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock.vsix
+          name: Moq.QuickMock.${{ env.APP_VERSION }}.vsix
+          path: ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock.${{ env.APP_VERSION }}.vsix
