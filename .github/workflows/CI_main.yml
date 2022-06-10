@@ -27,6 +27,9 @@ jobs:
       - name: print APP_VERSION
         run: Write-Host $APP_VERSION
 
+      - name: rename Moq.QuickMock.Vsix.vsix to Moq.QuickMock.W.X.Y.Z.vsix
+        run:  ren ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\ruan.txt ruan.${{ env.APP_VERSION }}.txt
+
       - name: add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.1
       
