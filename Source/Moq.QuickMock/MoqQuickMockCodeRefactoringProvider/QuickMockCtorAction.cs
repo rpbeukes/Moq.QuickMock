@@ -1,119 +1,22 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CodeActions;
-using Microsoft.CodeAnalysis.CodeRefactorings;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
-using Microsoft.CodeAnalysis.Formatting;
-using Microsoft.CodeAnalysis.Simplification;
 using System;
 using System.Collections.Generic;
-using System.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Moq.QuickMock
+namespace Moq.QuickMock.MoqQuickMockCodeRefactoringProvider
 {
-    [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(MoqQuickMockCodeRefactoringProvider)), Shared]
-    public class MoqQuickMockCodeRefactoringProvider : CodeRefactoringProvider
+    public partial class MoqActions
     {
-        public override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
-        {
-            var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
-
-            // Find the node at the selection.
-            var node = root.FindNode(context.Span);
-
-            // this refactor is only available in tests files eg: "*Tests.cs"
-            if (node.SyntaxTree.FilePath.ToLower().Contains("tests.cs"))
-            {
-                if (node is ArgumentListSyntax argumentList)
-                {
-                    var isCreatingNewObject = argumentList.Parent.IsKind(SyntaxKind.ObjectCreationExpression);
-                    if (isCreatingNewObject)
-                    {
-                        var document = context.Document;
-                        var semanticModel = await document.GetSemanticModelAsync(context.CancellationToken);
-                        var objectCreationExpressionSyntax = argumentList.Parent as ObjectCreationExpressionSyntax;
-                        var ctorSymbol = semanticModel.GetSymbolInfo(objectCreationExpressionSyntax);
-
-                        if (ctorSymbol.CandidateSymbols.Any())
-                        {
-                            var ctorMethodSymbols = ctorSymbol.CandidateSymbols.OfType<IMethodSymbol>()
-                                                              .Where(x => x.Parameters.Length > 0);
-                            if (ctorMethodSymbols.Any())
-                            {
-                                var quickMockCtorAction = CodeAction.Create("Quick mock ctor (Moq)", c => QuickMockCtor(context.Document, ctorMethodSymbols, argumentList, c));
-                                var mockCtorAction = CodeAction.Create("Mock ctor (Moq)", c => MockMoq(context.Document, ctorMethodSymbols, argumentList, c));
-
-                                // Register this code action.
-                                context.RegisterRefactoring(quickMockCtorAction);
-                                context.RegisterRefactoring(mockCtorAction);
-                            }
-                        }
-                    }
-                }
-            }
-            return;
-        }
-        private async Task<Document> MockMoq(Document document, IEnumerable<IMethodSymbol> ctorMethodSymbols, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
-        {
-            var ctorWithMostParameters = ctorMethodSymbols.Select(x => x.Parameters).OrderByDescending(x => x.Length).First();
-
-            var newVarList = new List<StatementSyntax>();
-            var newArgsList = new List<string>();
-            foreach (var paramSymbol in ctorWithMostParameters)
-            {
-                var paramType = paramSymbol.Type;
-                var isString = paramType.Name.ToLowerInvariant() == "string";
-                if (!isString && paramType.IsReferenceType)
-                {
-                    var newVarName = $"{paramSymbol.Name}Mock";
-                    var declaringStatement = $"var {newVarName} = new Mock<{paramSymbol.Type}>();{Environment.NewLine}";
-                    var newVar = SyntaxFactory.ParseStatement(declaringStatement)
-                                     // this seems to be the magic to remove Full Qualified Names
-                                     .WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation);
-                    newVarList.Add(newVar);
-                    newArgsList.Add($"{newVarName}.Object");
-                }
-                else if (isString || paramType.IsValueType)
-                {
-                    newArgsList.Add($"It.IsAny<{paramSymbol}>()");
-                }
-                else
-                {
-                    newArgsList.Add($" "); // dont know what to do here, user should look closer and fix.
-                }
-            }
-
-            var editor = await DocumentEditor.CreateAsync(document);
-            
-            var modifiedArguments = new SeparatedSyntaxList<ArgumentSyntax>().AddRange
-            (
-                new ArgumentSyntax[]
-                {
-                        SyntaxFactory.Argument(SyntaxFactory.ParseExpression($"{string.Join($", ", newArgsList)}"))
-                }
-            );
-
-            var modifiedArgumentList = SyntaxFactory.ArgumentList(modifiedArguments);
-            editor.ReplaceNode(argumentList, modifiedArgumentList);
-
-            var location = argumentList.Ancestors().OfType<LocalDeclarationStatementSyntax>().First();
-            editor.InsertBefore(location, newVarList);
-
-            var changedDoc = editor.GetChangedDocument();
-            return changedDoc;
-        }
-
-        private async Task<Document> QuickMockCtor(Document document, IEnumerable<IMethodSymbol> ctorMethodSymbols, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
+        public static async Task<Document> QuickMockCtor(Document document, IEnumerable<IMethodSymbol> ctorMethodSymbols, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
         {
             // phase one, mock the biggest ctor (can be improved later)
-            // also, one should validate if the parameters are all reference types because
-            //       Moq does not allow eg: `new Hero(Mock.Of<string>(), Mock.Of<bool>());`
             var ctorWithMostParameters = ctorMethodSymbols.Select(x => x.Parameters).OrderByDescending(x => x.Length).First();
-            
+
             var newArgsList = new List<string>();
             foreach (var paramSymbol in ctorWithMostParameters)
             {
