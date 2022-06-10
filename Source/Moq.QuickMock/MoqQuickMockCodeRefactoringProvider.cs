@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Simplification;
+using System;
 using System.Collections.Generic;
 using System.Composition;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace Moq.QuickMock
         public override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
-            
+
             // Find the node at the selection.
             var node = root.FindNode(context.Span);
 
@@ -36,7 +37,7 @@ namespace Moq.QuickMock
                         var semanticModel = await document.GetSemanticModelAsync(context.CancellationToken);
                         var objectCreationExpressionSyntax = argumentList.Parent as ObjectCreationExpressionSyntax;
                         var ctorSymbol = semanticModel.GetSymbolInfo(objectCreationExpressionSyntax);
-                        
+
                         if (ctorSymbol.CandidateSymbols.Any())
                         {
                             var ctorMethodSymbols = ctorSymbol.CandidateSymbols.OfType<IMethodSymbol>()
@@ -44,8 +45,8 @@ namespace Moq.QuickMock
                             if (ctorMethodSymbols.Any())
                             {
                                 var quickMockCtorAction = CodeAction.Create("Quick mock ctor (Moq)", c => QuickMockCtor(context.Document, ctorMethodSymbols, argumentList, c));
-                                var mockCtorAction = CodeAction.Create("Mock ctor (Moq)", c => MockMoq(context.Document, ctorMethodSymbols, argumentList, c));
-                                
+                                var mockCtorAction = CodeAction.Create("Mock ctor (Moq)", c => MockMoq(root, context.Document, ctorMethodSymbols, argumentList, c));
+
                                 // Register this code action.
                                 context.RegisterRefactoring(quickMockCtorAction);
                                 context.RegisterRefactoring(mockCtorAction);
@@ -56,19 +57,74 @@ namespace Moq.QuickMock
             }
             return;
         }
-        private async Task<Document> MockMoq(Document document, IEnumerable<IMethodSymbol> ctorMethodSymbols, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
+        private async Task<Document> MockMoq(SyntaxNode root, Document document, IEnumerable<IMethodSymbol> ctorMethodSymbols, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
         {
-            //argumentList.Span
-            
-            var ctorWithMostParameters = ctorMethodSymbols.Select(x => x.Parameters).OrderByDescending(x => x.Length).First();
-            var statements = new List<StatementSyntax>();
-            StatementSyntax newVar = SyntaxFactory.ParseStatement("var theNewVar;").WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation);
-            //var rrr = argumentList.InsertNodesBefore();
-            var editor = await DocumentEditor.CreateAsync(document);
-            //var intSyntax = SyntaxFactory.LocalDeclarationStatement(SyntaxFactory.VariableDeclaration());
-            //editor.Generator.
-            var changedDoc = editor.GetChangedDocument();
-            return changedDoc;
+            try
+            {
+                var ctorWithMostParameters = ctorMethodSymbols.Select(x => x.Parameters).OrderByDescending(x => x.Length).First();
+
+                var newVarList = new List<StatementSyntax>();
+                var newArgsList = new List<string>();
+                foreach (var paramSymbol in ctorWithMostParameters)
+                {
+                    var paramType = paramSymbol.Type;
+                    // will stick to fully named qualifiers as scenario `Func<SomeType>` fails.
+                    // var paramName = paramSymbol.Type.Name; 
+                    if (paramType.IsReferenceType)
+                    {
+                        var newVarName = $"{paramSymbol.Name}Mock";
+                        var declaringStatement = $"var {newVarName} = new Mock<{paramSymbol.Type}>();{Environment.NewLine}";
+                        var newVar = SyntaxFactory.ParseStatement(declaringStatement)
+                                         .WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation);
+                        newVarList.Add(newVar);
+                        newArgsList.Add($"{newVarName}.Object");
+                    }
+                    else if (paramType.IsValueType)
+                    {
+                        newArgsList.Add($"It.IsAny<{paramSymbol}>()");
+                    }
+                    else
+                    {
+                        newArgsList.Add($" "); // dont know what to do here, user should look closer and fix.
+                    }
+                }
+                //var paramSymbol = ctorWithMostParameters[0];
+                //var newVar = SyntaxFactory.ParseStatement($"var {paramSymbol.Name}Mock = new Mock<{paramSymbol.Type}>();{Environment.NewLine}")
+                //                          .WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation);
+
+
+
+
+                var editor = await DocumentEditor.CreateAsync(document);
+                //var localVar = SyntaxFactory.LocalDeclarationStatement(
+                //    SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
+                //                 .AddVariables(SyntaxFactory.VariableDeclarator("theNewVar")));
+
+                var modifiedArguments = new SeparatedSyntaxList<ArgumentSyntax>().AddRange
+                (
+                    new ArgumentSyntax[]
+                    {
+                        SyntaxFactory.Argument(SyntaxFactory.ParseExpression($"{string.Join($", ", newArgsList)}"))
+                    }
+                );
+
+                var modifiedArgumentList = SyntaxFactory.ArgumentList(modifiedArguments);
+                editor.ReplaceNode(argumentList, modifiedArgumentList);
+
+                var location = argumentList.Ancestors().OfType<LocalDeclarationStatementSyntax>().First();
+                editor.InsertBefore(location, newVarList);
+
+                //var newRoot = root.InsertNodesBefore(argumentList, new List<SyntaxNode>() { localVar });
+                //var eee = document.WithSyntaxRoot(localVar);
+                var changedDoc = editor.GetChangedDocument();
+                return changedDoc;
+            }
+            catch (Exception ex)
+            {
+                var d = ex;
+            }
+            return null;
+
         }
 
         private async Task<Document> QuickMockCtor(Document document, IEnumerable<IMethodSymbol> ctorMethodSymbols, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
@@ -78,7 +134,7 @@ namespace Moq.QuickMock
             //       Moq does not allow eg: `new Hero(Mock.Of<string>(), Mock.Of<bool>());`
             var ctorWithMostParameters = ctorMethodSymbols.Select(x => x.Parameters).OrderByDescending(x => x.Length).First();
 
-            var changedList = new List<string>();
+            var newArgsList = new List<string>();
             foreach (var paramSymbol in ctorWithMostParameters)
             {
                 var paramType = paramSymbol.Type;
@@ -87,19 +143,19 @@ namespace Moq.QuickMock
                 if (paramType.IsReferenceType)
                 {
                     var moqString = $"Mock.Of<{paramSymbol}>()";
-                    changedList.Add(moqString);
+                    newArgsList.Add(moqString);
                 }
                 else if (paramType.IsValueType)
                 {
-                    changedList.Add($"It.IsAny<{paramSymbol}>()");
+                    newArgsList.Add($"It.IsAny<{paramSymbol}>()");
                 }
                 else
                 {
-                    changedList.Add($" "); // dont know what to do here, user should look closer and fix.
+                    newArgsList.Add($" "); // dont know what to do here, user should look closer and fix.
                 }
             }
 
-            if (changedList.Any())
+            if (newArgsList.Any())
             {
                 var editor = await DocumentEditor.CreateAsync(document);
 
@@ -107,7 +163,7 @@ namespace Moq.QuickMock
                 (
                     new ArgumentSyntax[]
                     {
-                        SyntaxFactory.Argument(SyntaxFactory.ParseExpression($"{string.Join($", ", changedList)}")),
+                        SyntaxFactory.Argument(SyntaxFactory.ParseExpression($"{string.Join($", ", newArgsList)}"))
                     }
                 );
 
