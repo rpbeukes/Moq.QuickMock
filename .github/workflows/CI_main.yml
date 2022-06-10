@@ -43,10 +43,10 @@ jobs:
         run:  msbuild Moq.QuickMock.sln -t:rebuild -property:Configuration=Release
 
       - name: rename Moq.QuickMock.Vsix.vsix to Moq.QuickMock.vsix
-        run:  ren ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock.Vsix.vsix Moq.QuickMock${{ $APP_VERSION }}.vsix
+        run:  ren ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock.Vsix.vsix Moq.QuickMock${{APP_VERSION}}.vsix
 
       - name: create artifact
         uses: actions/upload-artifact@v3
         with:
           name: Moq.QuickMock.vsix
-          path: ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock${{ $APP_VERSION }}.vsix
+          path: ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock${{APP_VERSION}}.vsix
