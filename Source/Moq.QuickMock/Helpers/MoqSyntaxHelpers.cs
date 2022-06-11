@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Moq.QuickMock.MoqQuickMockCodeRefactoringProvider
+namespace Moq.QuickMock.Helpers
 {
     public class MoqSyntaxHelpers
     {

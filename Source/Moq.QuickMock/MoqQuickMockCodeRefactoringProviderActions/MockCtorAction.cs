@@ -3,13 +3,15 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Simplification;
+using Moq.QuickMock.Extensions;
+using Moq.QuickMock.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Moq.QuickMock.MoqQuickMockCodeRefactoringProvider
+namespace Moq.QuickMock.MoqQuickMockCodeRefactoringProviderActions
 {
     public partial class MoqActions
     {

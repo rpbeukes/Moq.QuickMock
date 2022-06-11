@@ -3,12 +3,13 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeRefactorings;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Moq.QuickMock.MoqQuickMockCodeRefactoringProviderActions;
 using System;
 using System.Composition;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Moq.QuickMock.MoqQuickMockCodeRefactoringProvider
+namespace Moq.QuickMock
 {
     [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(MoqQuickMockCodeRefactoringProvider)), Shared]
     public class MoqQuickMockCodeRefactoringProvider : CodeRefactoringProvider

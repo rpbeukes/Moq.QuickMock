@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Moq.QuickMock.MoqQuickMockCodeRefactoringProvider
+namespace Moq.QuickMock.Helpers
 {
     public class UpdateEditorHelpers
     {

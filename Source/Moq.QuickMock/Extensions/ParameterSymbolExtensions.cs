@@ -1,11 +1,11 @@
 ﻿using Microsoft.CodeAnalysis;
-using Moq.QuickMock.MoqQuickMockCodeRefactoringProvider;
+using Moq.QuickMock.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text;
 
-namespace Moq.QuickMock
+namespace Moq.QuickMock.Extensions
 {
     public static class ParameterSymbolExtensions
     {
