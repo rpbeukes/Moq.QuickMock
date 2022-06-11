@@ -1,7 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Simplification;
 using System;
@@ -14,17 +13,15 @@ namespace Moq.QuickMock.MoqQuickMockCodeRefactoringProvider
 {
     public partial class MoqActions
     {
-        public static async Task<Document> MockMoq(Document document, IEnumerable<IMethodSymbol> ctorMethodSymbols, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
+        public static async Task<Document> MockCtor(Document document, IEnumerable<IMethodSymbol> ctorMethodSymbols, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
         {
             var ctorWithMostParameters = ctorMethodSymbols.Select(x => x.Parameters).OrderByDescending(x => x.Length).First();
 
             var newVarList = new List<StatementSyntax>();
             var newArgsList = new List<string>();
-            foreach (var paramSymbol in ctorWithMostParameters)
-            {
-                var paramType = paramSymbol.Type;
-                var isString = paramType.Name.ToLowerInvariant() == "string";
-                if (!isString && paramType.IsReferenceType)
+
+            ctorWithMostParameters.FindReferenceAndValueTypes(
+                onFoundReferenceType: paramSymbol =>
                 {
                     var newVarName = $"{paramSymbol.Name}Mock";
                     var declaringStatement = $"var {newVarName} = new Mock<{paramSymbol.Type}>();{Environment.NewLine}";
@@ -33,29 +30,18 @@ namespace Moq.QuickMock.MoqQuickMockCodeRefactoringProvider
                                      .WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation);
                     newVarList.Add(newVar);
                     newArgsList.Add($"{newVarName}.Object");
-                }
-                else if (isString || paramType.IsValueType)
+                },
+                onFoundValueType: (paramSymbol, suggestedArgumentText) =>
                 {
-                    newArgsList.Add($"It.IsAny<{paramSymbol}>()");
-                }
-                else
+                    newArgsList.Add(suggestedArgumentText);
+                },
+                onTypeNotIdentified: (paramSymbol, suggestedArgumentText) =>
                 {
-                    newArgsList.Add($" "); // dont know what to do here, user should look closer and fix.
-                }
-            }
+                    // dont know what to do here, user should look closer and fix.
+                    newArgsList.Add(suggestedArgumentText);
+                });
 
-            var editor = await DocumentEditor.CreateAsync(document);
-
-            var modifiedArguments = new SeparatedSyntaxList<ArgumentSyntax>().AddRange
-            (
-                new ArgumentSyntax[]
-                {
-                        SyntaxFactory.Argument(SyntaxFactory.ParseExpression($"{string.Join($", ", newArgsList)}"))
-                }
-            );
-
-            var modifiedArgumentList = SyntaxFactory.ArgumentList(modifiedArguments);
-            editor.ReplaceNode(argumentList, modifiedArgumentList);
+            var editor = await UpdateEditorHelpers.ReplaceArguments(document, argumentList, newArgsList);
 
             var location = argumentList.Ancestors().OfType<LocalDeclarationStatementSyntax>().First();
             editor.InsertBefore(location, newVarList);
