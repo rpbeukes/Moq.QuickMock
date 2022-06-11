@@ -40,7 +40,7 @@ namespace Moq.QuickMock.MoqQuickMockCodeRefactoringProvider
                             if (ctorMethodSymbols.Any())
                             {
                                 var quickMockCtorAction = CodeAction.Create("Quick mock ctor (Moq)", c => MoqActions.QuickMockCtor(context.Document, ctorMethodSymbols, argumentList, c));
-                                var mockCtorAction = CodeAction.Create("Mock ctor (Moq)", c => MoqActions.MockMoq(context.Document, ctorMethodSymbols, argumentList, c));
+                                var mockCtorAction = CodeAction.Create("Mock ctor (Moq)", c => MoqActions.MockCtor(context.Document, ctorMethodSymbols, argumentList, c));
 
                                 // Register this code action.
                                 context.RegisterRefactoring(quickMockCtorAction);
