@@ -97,6 +97,7 @@ The dream:
 ```
    var c = new CodeWithBigConstructor(Mock.Of<ISecureUser>());
 ```
+- Currently only supports C#, will need to give the [VB.Net](https://docs.microsoft.com/en-us/dotnet/visual-basic/) folks more love.
 ---
 
 ## ToDos
@@ -108,6 +109,7 @@ The dream:
 - auto increment extension version on a successful build.
 - add an icon.
 - deploy to [Visual Studio Marketplace](https://marketplace.visualstudio.com/), so one gets updates automagically.
+- Get it working in [VB.Net](https://docs.microsoft.com/en-us/dotnet/visual-basic/) .
 
 ### Investigations
 - Unit testing extensions (or something like that).
