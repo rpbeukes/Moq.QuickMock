@@ -1,14 +1,14 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Editing;
+using Moq.QuickMock.Extensions;
+using Moq.QuickMock.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Moq.QuickMock.MoqQuickMockCodeRefactoringProvider
+namespace Moq.QuickMock.MoqQuickMockCodeRefactoringProviderActions
 {
     public partial class MoqActions
     {
@@ -17,42 +17,28 @@ namespace Moq.QuickMock.MoqQuickMockCodeRefactoringProvider
             // phase one, mock the biggest ctor (can be improved later)
             var ctorWithMostParameters = ctorMethodSymbols.Select(x => x.Parameters).OrderByDescending(x => x.Length).First();
 
+            var newVarList = new List<StatementSyntax>();
             var newArgsList = new List<string>();
-            foreach (var paramSymbol in ctorWithMostParameters)
-            {
-                var paramType = paramSymbol.Type;
-                // will stick to fully named qualifiers as scenario `Func<SomeType>` fails.
-                // var paramName = paramSymbol.Type.Name; 
-                var isString = paramType.Name.ToLowerInvariant() == "string";
-                if (!isString && paramType.IsReferenceType)
+
+            ctorWithMostParameters.FindReferenceAndValueTypes(
+                onFoundReferenceType: paramSymbol =>
                 {
                     var moqString = $"Mock.Of<{paramSymbol}>()";
                     newArgsList.Add(moqString);
-                }
-                else if (isString || paramType.IsValueType)
+                },
+                onFoundValueType: (paramSymbol, suggestedArgumentText) =>
                 {
-                    newArgsList.Add($"It.IsAny<{paramSymbol}>()");
-                }
-                else
+                    newArgsList.Add(suggestedArgumentText);
+                },
+                onTypeNotIdentified: (paramSymbol, suggestedArgumentText) =>
                 {
-                    newArgsList.Add($" "); // dont know what to do here, user should look closer and fix.
-                }
-            }
+                    // dont know what to do here, user should look closer and fix.
+                    newArgsList.Add(suggestedArgumentText);
+                });
 
             if (newArgsList.Any())
             {
-                var editor = await DocumentEditor.CreateAsync(document);
-
-                var modifiedArguments = new SeparatedSyntaxList<ArgumentSyntax>().AddRange
-                (
-                    new ArgumentSyntax[]
-                    {
-                        SyntaxFactory.Argument(SyntaxFactory.ParseExpression($"{string.Join($", ", newArgsList)}"))
-                    }
-                );
-
-                var modifiedArgumentList = SyntaxFactory.ArgumentList(modifiedArguments);
-                editor.ReplaceNode(argumentList, modifiedArgumentList);
+                var editor = await UpdateEditorHelpers.ReplaceArguments(document, argumentList, newArgsList);
                 var changedDoc = editor.GetChangedDocument();
                 return changedDoc;
             }

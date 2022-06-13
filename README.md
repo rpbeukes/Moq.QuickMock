@@ -1,7 +1,7 @@
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/rpbeukes/Moq.QuickMock/CI/main)](https://github.com/rpbeukes/Moq.QuickMock/actions/workflows/CI_main.yml?query=branch%3Amain+) [![GitHub](https://img.shields.io/github/license/rpbeukes/Moq.QuickMock)](https://github.com/rpbeukes/Moq.QuickMock/blob/main/LICENSE)
 
 # Moq.QuickMock
-Small Visual Studio 2022 extension to help writing C# [Moq](https://github.com/moq/moq) tests.
+Small Visual Studio 2022 extension, helping to write [Moq](https://github.com/moq/moq) tests for C#.
 
 ---
 
@@ -97,6 +97,7 @@ The dream:
 ```
    var c = new CodeWithBigConstructor(Mock.Of<ISecureUser>());
 ```
+- Currently only supports C#, will need to give the [VB.Net](https://docs.microsoft.com/en-us/dotnet/visual-basic/) folks more love.
 ---
 
 ## ToDos
@@ -108,6 +109,7 @@ The dream:
 - auto increment extension version on a successful build.
 - add an icon.
 - deploy to [Visual Studio Marketplace](https://marketplace.visualstudio.com/), so one gets updates automagically.
+- Get it working for [VB.Net](https://docs.microsoft.com/en-us/dotnet/visual-basic/) .
 
 ### Investigations
 - Unit testing extensions (or something like that).
