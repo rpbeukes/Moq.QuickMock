@@ -42,8 +42,7 @@ namespace Moq.QuickMock
                         
                         if (classDefinition.TypeKind == TypeKind.Class && classDefinition.Constructors.Any())
                         {
-                            var ctorMethodSymbols = classDefinition.Constructors.OfType<IMethodSymbol>()
-                                                                                .Where(x => x.Parameters.Length > 0);
+                            var ctorMethodSymbols = classDefinition.Constructors.Where(x => x.Parameters.Length > 0);
                             if (ctorMethodSymbols.Any())
                             {
                                 var quickMockCtorAction = CodeAction.Create("Quick mock ctor (Moq)", c => MoqActions.QuickMockCtor(context.Document, ctorMethodSymbols, argumentList, c));
