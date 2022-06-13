@@ -106,7 +106,6 @@ The dream:
 - Remove fully qualified types.
 - add test project.
 - create better visual explanation (.gif) of the extension's intent.
-- auto increment extension version on a successful build.
 - add an icon.
 - deploy to [Visual Studio Marketplace](https://marketplace.visualstudio.com/), so one gets updates automagically.
 - Get it working for [VB.Net](https://docs.microsoft.com/en-us/dotnet/visual-basic/) .
