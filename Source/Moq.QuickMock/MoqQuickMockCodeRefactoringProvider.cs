@@ -33,11 +33,11 @@ namespace Moq.QuickMock
                         var semanticModel = await document.GetSemanticModelAsync(context.CancellationToken);
                         var objectCreationExpressionSyntax = argumentList.Parent as ObjectCreationExpressionSyntax;
                         var ctorSymbol = semanticModel.GetSymbolInfo(objectCreationExpressionSyntax);
-
-                        if (ctorSymbol.CandidateSymbols.Any())
+                        
+                        if (ctorSymbol.Symbol.ContainingType.Constructors.Any())
                         {
-                            var ctorMethodSymbols = ctorSymbol.CandidateSymbols.OfType<IMethodSymbol>()
-                                                              .Where(x => x.Parameters.Length > 0);
+                            var ctorMethodSymbols = ctorSymbol.Symbol.ContainingType.Constructors.OfType<IMethodSymbol>()
+                                                                                 .Where(x => x.Parameters.Length > 0);
                             if (ctorMethodSymbols.Any())
                             {
                                 var quickMockCtorAction = CodeAction.Create("Quick mock ctor (Moq)", c => MoqActions.QuickMockCtor(context.Document, ctorMethodSymbols, argumentList, c));
