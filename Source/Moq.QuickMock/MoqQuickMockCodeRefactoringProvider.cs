@@ -32,12 +32,18 @@ namespace Moq.QuickMock
                         var document = context.Document;
                         var semanticModel = await document.GetSemanticModelAsync(context.CancellationToken);
                         var objectCreationExpressionSyntax = argumentList.Parent as ObjectCreationExpressionSyntax;
-                        var ctorSymbol = semanticModel.GetSymbolInfo(objectCreationExpressionSyntax);
                         
-                        if (ctorSymbol.Symbol.ContainingType.Constructors.Any())
+                        if (objectCreationExpressionSyntax is null) return;
+                        
+                        var typeInfo = semanticModel.GetTypeInfo(objectCreationExpressionSyntax);
+                        var classDefinition = typeInfo.ConvertedType as INamedTypeSymbol;
+                        
+                        if (classDefinition is null) return;
+                        
+                        if (classDefinition.TypeKind == TypeKind.Class && classDefinition.Constructors.Any())
                         {
-                            var ctorMethodSymbols = ctorSymbol.Symbol.ContainingType.Constructors.OfType<IMethodSymbol>()
-                                                                                 .Where(x => x.Parameters.Length > 0);
+                            var ctorMethodSymbols = classDefinition.Constructors.OfType<IMethodSymbol>()
+                                                                                .Where(x => x.Parameters.Length > 0);
                             if (ctorMethodSymbols.Any())
                             {
                                 var quickMockCtorAction = CodeAction.Create("Quick mock ctor (Moq)", c => MoqActions.QuickMockCtor(context.Document, ctorMethodSymbols, argumentList, c));
