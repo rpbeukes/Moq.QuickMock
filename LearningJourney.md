@@ -25,7 +25,7 @@ Google: [mads kristensen extensions](https://www.google.com/search?q=mads+kriste
 ## Github
 - [mads](https://github.com/madskristensen)
 - [RefactoringEssentials](https://github.com/icsharpcode/RefactoringEssentials) - thanx to icsharpcode community.
-
+- [Mocking.Helpers](https://github.com/MrLuje/Mocking.Helpers) - thanx to MrLuje.
 - [moq.autocomplete](https://github.com/Litee/moq.autocomplete) - thanx to Litee (Andrey Lipatkin)
 
 ## Github Actions - Build Pipeline
