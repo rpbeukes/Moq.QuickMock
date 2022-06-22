@@ -78,7 +78,8 @@ namespace Moq.QuickMock
                         
                         var newExpression = SyntaxFactory.ParseExpression($"{newVarName}.Object")
                                              // this seems to be the magic to remove Full Qualified Names
-                                             .WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation);
+                                             .WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation)
+                                             .WithLeadingTrivia(currentArg.GetLeadingTrivia());
 
                         var newArg = SyntaxFactory.Argument(newExpression);
 
