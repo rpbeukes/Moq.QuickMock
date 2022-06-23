@@ -105,3 +105,6 @@ I left my [solution](https://github.com/dotnet/roslyn-sdk/issues/889#issuecommen
 Investigation tools: 
 - [ms sysinternals](https://docs.microsoft.com/en-us/sysinternals/)
 -  [Microsoft Child Process Debugging Power Tool 2022](https://marketplace.visualstudio.com/items?itemName=vsdbgplat.MicrosoftChildProcessDebuggingPowerTool2022)
+
+## Video to Gif conversion
+[cloudconvert](https://cloudconvert.com/mp4-to-gif)

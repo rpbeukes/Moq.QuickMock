@@ -44,6 +44,8 @@ public void TheTestFunction()
 
 or to this via `Quick mock ctor (Moq)` refactor:
 
+![QuickMockCtorDemo](Doco/QuickMockCtor.gif)
+
 **MyTests.cs**:
 ```
 ...
@@ -104,7 +106,6 @@ The dream:
 
 ### Tasks (Priority ordered)
 - Remove fully qualified types.
-- add test project.
 - create better visual explanation (.gif) of the extension's intent.
 - add an icon.
 - deploy to [Visual Studio Marketplace](https://marketplace.visualstudio.com/), so one gets updates automagically.
