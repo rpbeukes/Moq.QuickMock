@@ -11,9 +11,9 @@ Download `Moq.QuickMock.vsix` from latest successful [build](https://github.com/
 ---
 
 ## Available Refactors
-- Mock ctor 
-- Quick mock ctor 
-- Mock.Of&lt;T&gt; to new Mock&lt;T&gt; 
+- [Mock ctor](https://github.com/rpbeukes/Moq.QuickMock/tree/MockOf-to-new-Mock#mock-ctor-moq)
+- [Quick mock ctor](https://github.com/rpbeukes/Moq.QuickMock/tree/MockOf-to-new-Mock#quick-mock-ctor-moq)
+- [Mock.Of&lt;T&gt; to new Mock&lt;T&gt;](https://github.com/rpbeukes/Moq.QuickMock/tree/MockOf-to-new-Mock#mockof-to-new-mock-moq)
 
 ---
 
