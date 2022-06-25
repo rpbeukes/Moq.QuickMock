@@ -31,5 +31,19 @@ namespace DemoProject.Tests
                                                    Mock.Of<Func<SomeCommand>>(),
                                                    Mock.Of<Func<IValidator<InvoiceDetailsInput>>>());
         }
+
+        [TestMethod()]
+        public void DemoClassOnlyTest_MockObject_to_MockOfT_local_variable()
+        {
+            var currentUserMock = new Mock<ICurrentUser>();
+            var validatorFactoryMock = new Mock<Func<IValidator<InvoiceDetailsInput>>>();
+            var systemUnderTest = new DemoClassOnly(Mock.Of<ILogger<DemoClassOnly>>(),
+                                                   It.IsAny<string>(),
+                                                   It.IsAny<int>(),
+                                                   It.IsAny<int?>(),
+                                                   currentUserMock.Object,
+                                                   Mock.Of<Func<SomeCommand>>(),
+                                                   validatorFactoryMock.Object);
+        }
     }
 }
