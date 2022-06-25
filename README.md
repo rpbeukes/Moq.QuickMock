@@ -89,7 +89,7 @@ Put the `cursor (caret)` on an argument where `Mock.Of<T>` is used.
 
 Make sure you put the `cursor` on the word `Mock` or just in front of it.
 
-![Mock of to new mock Demo](Doco/Assets/QuickMockCtor.gif)
+![Mock of to new mock Demo](Doco/Assets/MockOfToNewMock.gif)
 
 Refactor output:
 
