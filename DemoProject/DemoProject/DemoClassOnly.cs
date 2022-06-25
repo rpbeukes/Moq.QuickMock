@@ -21,9 +21,9 @@ namespace DemoProject
         public DemoClassOnly(ILogger<DemoClassOnly> logger,
                              string stringValue,
                              int intValue,
-                             int? nullIntValue
-                             )
+                             int? nullIntValue)
         {
+
         }
     }
 }
