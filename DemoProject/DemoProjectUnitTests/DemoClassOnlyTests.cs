@@ -17,13 +17,13 @@ namespace DemoProject.Tests
         [TestMethod()]
         public void DemoClassOnlyTest_Quick_mock_ctor_OR_Mock_ctor()
         {
-            var sytemUnderTest = new DemoClassOnly();
+            var systemUnderTest = new DemoClassOnly();
         }
 
         [TestMethod()]
         public void DemoClassOnlyTest_MockOf_to_new_Mock()
         {
-            var sytemUnderTest = new DemoClassOnly(Mock.Of<ILogger<DemoClassOnly>>(),
+            var systemUnderTest = new DemoClassOnly(Mock.Of<ILogger<DemoClassOnly>>(),
                                                    It.IsAny<string>(),
                                                    It.IsAny<int>(),
                                                    It.IsAny<int?>(),
