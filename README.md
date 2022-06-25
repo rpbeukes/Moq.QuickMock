@@ -14,7 +14,7 @@ Download `Moq.QuickMock.vsix` from latest successful [build](https://github.com/
 
 `DemoClassOnly` class to mock:
 
-```
+```csharp
 public DemoClassOnly(ILogger<DemoClassOnly> logger,
                      string stringValue,
                      int intValue,
@@ -24,7 +24,7 @@ public DemoClassOnly(ILogger<DemoClassOnly> logger,
                      Func<IValidator<InvoiceDetailsInput>>  validatorFactory) { }
 ```
 
-## Refactor
+## Refactors
 
 All these examples live in **MyTestDemoClassOnlyTests.cs**.
 
@@ -32,13 +32,29 @@ All these examples live in **MyTestDemoClassOnlyTests.cs**.
 
 Put the `cursor (caret)` between the `()`, and hit `CTRL + .`.
 
-```
-var r = new DemoClassOnly(<cursor>);
+```csharp
+var systemUnderTest = new DemoClassOnly(<cursor>);
 ```
 
 Find `Mock ctor (Moq)` Refactor Menu Options.
 
 ![Mock Ctor Demo](Doco/MockCtor.gif)
+
+Refactor output:
+
+```csharp
+var loggerMock = new Mock<ILogger<DemoClassOnly>>();
+var currentUserMock = new Mock<ICurrentUser>();
+var cmdFactoryMock = new Mock<Func<SomeCommand>>();
+var validatorFactoryMock = new Mock<Func<IValidator<InvoiceDetailsInput>>>();
+var systemUnderTest = new DemoClassOnly(loggerMock.Object,
+                                        It.IsAny<string>(),
+                                        It.IsAny<int>(),
+                                        It.IsAny<int?>(),
+                                        currentUserMock.Object,
+                                        cmdFactoryMock.Object,
+                                        validatorFactoryMock.Object);
+```
 
 ---
 
@@ -46,13 +62,25 @@ Find `Mock ctor (Moq)` Refactor Menu Options.
 
 Put the `cursor (caret)` between the `()`, and hit `CTRL + .`.
 
-```
-var r = new DemoClassOnly(<cursor>);
+```csharp
+var systemUnderTest = new DemoClassOnly(<cursor>);
 ```
 
 Find `Quick mock ctor (Moq)` Refactor Menu Options.
 
 ![Quick Mock Ctor Demo](Doco/QuickMockCtor.gif)
+
+Refactor output:
+
+```csharp
+var systemUnderTest = new DemoClassOnly(Mock.Of<ILogger<DemoClassOnly>>(),
+                                        It.IsAny<string>(),
+                                        It.IsAny<int>(),
+                                        It.IsAny<int?>(),
+                                        Mock.Of<ICurrentUser>(),
+                                        Mock.Of<Func<SomeCommand>>(),
+                                        Mock.Of<Func<IValidator<InvoiceDetailsInput>>>());
+```
 
 ---
 
