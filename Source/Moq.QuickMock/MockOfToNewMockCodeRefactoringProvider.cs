@@ -62,12 +62,11 @@ namespace Moq.QuickMock
 
                         var paramSymbol = theCorrectConstructor.Parameters[argPosition];
 
-
                         var newVarName = $"{paramSymbol.Name}Mock";
                         var declaringStatement = $"var {newVarName} = new Mock<{paramSymbol.Type}>();{Environment.NewLine}";
                         var newVar = SyntaxFactory.ParseStatement(declaringStatement)
                                          // this seems to be the magic to remove Full Qualified Names
-                                         .WithAdditionalAnnotations(Formatter.Annotation, Microsoft.CodeAnalysis.Simplification.Simplifier.Annotation);
+                                         .WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation);
 
                         var newVarList = new List<StatementSyntax>() { newVar };
 
