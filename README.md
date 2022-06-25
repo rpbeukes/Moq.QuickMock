@@ -13,7 +13,7 @@ Download `Moq.QuickMock.vsix` from latest successful [build](https://github.com/
 ## Available Refactors
 - Mock ctor 
 - Quick mock ctor 
-- Mock.Of<T> to new Mock<T> 
+- Mock.Of&lt;T&gt; to new Mock&lt;T&gt; 
 
 ---
 
