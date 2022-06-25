@@ -95,11 +95,5 @@ namespace Moq.QuickMock
             }
             return;
         }
-
-        //public static async Task<Document> MockOfToNewMock(Document document, IMethodSymbol ctorMethodSymbol, ArgumentListSyntax argumentList, CancellationToken cancellationToken)
-        //{
-
-        //    return document;
-        //}
     }
 }
