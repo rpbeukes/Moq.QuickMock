@@ -12,65 +12,47 @@ Download `Moq.QuickMock.vsix` from latest successful [build](https://github.com/
 
 ## Scenario
 
-Extension will change code from this:
+`DemoClassOnly` class to mock:
 
-**MyTests.cs**:
 ```
-...
-[TestMethod()]
-public void TheTestFunction()
-{
-    var r = new CodeWithBigConstructor();
-}
-...
-```
-
-to this via `Mock ctor (Moq)` refactor:
-
-![kMockCtorDemo](Doco/MockCtor.gif)
-
-**MyTests.cs**:
-```
-...
-[TestMethod()]
-public void TheTestFunction()
-{
-    var loggerMock = new Mock<ILogger<CodeWithBigConstructor>>();
-    var secureUserMock = new Mock<ISecureUser>();
-    var factoryMock = new Mock<Func<SomeCoolFunction>>();
-
-    var r = new CodeWithBigConstructor(loggerMock.Object, secureUserMock.Object, factoryMock.Object);
-}
-...
+public DemoClassOnly(ILogger<DemoClassOnly> logger,
+                     string stringValue,
+                     int intValue,
+                     int? nullIntValue,
+                     ICurrentUser currentUser,
+                     Func<SomeCommand> cmdFactory,
+                     Func<IValidator<InvoiceDetailsInput>>  validatorFactory) { }
 ```
 
-or to this via `Quick mock ctor (Moq)` refactor:
+## Refactor
 
-![QuickMockCtorDemo](Doco/QuickMockCtor.gif)
+All these examples live in **MyTestDemoClassOnlyTests.cs**.
 
-**MyTests.cs**:
+### Mock ctor (Moq)
+
+Put the `cursor (caret)` between the `()`, and hit `CTRL + .`.
+
 ```
-...
-[TestMethod()]
-public void TheTestFunction()
-{
-    var r = new CodeWithBigConstructor(Mock.Of<ILogger<CodeWithBigConstructor>>(), Mock.Of<ISecureUser>(), Mock.Of<Func<SomeCoolFunction>>());
-}
-...
+var r = new DemoClassOnly(<cursor>);
 ```
 
-**CodeWithBigConstructor.cs**:
+Find `Mock ctor (Moq)` Refactor Menu Options.
+
+![Mock Ctor Demo](Doco/MockCtor.gif)
+
+---
+
+### Quick mock ctor (Moq)
+
+Put the `cursor (caret)` between the `()`, and hit `CTRL + .`.
+
 ```
-public class CodeWithBigConstructor
-{
-    public CodeWithBigConstructor(ILogger<CodeWithBigConstructor> logger,
-                                  ISecureUser secureUser,
-                                  Func<SomeCoolFunction> factory)
-    {
-        
-    }
-}
+var r = new DemoClassOnly(<cursor>);
 ```
+
+Find `Quick mock ctor (Moq)` Refactor Menu Options.
+
+![Quick Mock Ctor Demo](Doco/QuickMockCtor.gif)
 
 ---
 
@@ -78,21 +60,9 @@ public class CodeWithBigConstructor
 
 ---
 
-## How to use
-Put the `cursor (caret)` between the `()`, and hit `CTRL + .`.
-
-```
-var r = new CodeWithBigConstructor(<cursor>);
-```
-
-Find `Quick mock ctor (Moq)` Refactor Menu Options:
-
-![RefactorMenuOption](Doco/RefactorMenuDisplay.png)
-
----
-
 ## Know issues
 - Extension generates `Fully qualified type` names.
+This can be tolerated by using `Simply name` refactor provided by Visual Studio.
   eg:
 ```
    var c = new CodeWithBigConstructor(Mock.Of<App.That.Will.Take.Over.The.World.ISecureUser>());
