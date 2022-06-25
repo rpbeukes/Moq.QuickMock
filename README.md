@@ -10,6 +10,13 @@ Download `Moq.QuickMock.vsix` from latest successful [build](https://github.com/
 
 ---
 
+## Available Refactors
+- [Mock ctor](https://github.com/rpbeukes/Moq.QuickMock/tree/MockOf-to-new-Mock#mock-ctor-moq)
+- [Quick mock ctor](https://github.com/rpbeukes/Moq.QuickMock/tree/MockOf-to-new-Mock#quick-mock-ctor-moq)
+- [Mock.Of&lt;T&gt; to new Mock&lt;T&gt;](https://github.com/rpbeukes/Moq.QuickMock/tree/MockOf-to-new-Mock#mockof-to-new-mock-moq)
+
+---
+
 ## Scenario
 
 `DemoClassOnly` class to mock:
@@ -38,7 +45,7 @@ var systemUnderTest = new DemoClassOnly(<cursor>);
 
 Find `Mock ctor (Moq)` Refactor Menu Options.
 
-![Mock Ctor Demo](Doco/MockCtor.gif)
+![Mock Ctor Demo](Doco/Assets/MockCtor.gif)
 
 Refactor output:
 
@@ -68,7 +75,7 @@ var systemUnderTest = new DemoClassOnly(<cursor>);
 
 Find `Quick mock ctor (Moq)` Refactor Menu Options.
 
-![Quick Mock Ctor Demo](Doco/QuickMockCtor.gif)
+![Quick Mock Ctor Demo](Doco/Assets/QuickMockCtor.gif)
 
 Refactor output:
 
@@ -78,6 +85,38 @@ var systemUnderTest = new DemoClassOnly(Mock.Of<ILogger<DemoClassOnly>>(),
                                         It.IsAny<int>(),
                                         It.IsAny<int?>(),
                                         Mock.Of<ICurrentUser>(),
+                                        Mock.Of<Func<SomeCommand>>(),
+                                        Mock.Of<Func<IValidator<InvoiceDetailsInput>>>());
+```
+
+---
+### Mock.Of<T> to new Mock<T> (Moq)
+
+Put the `cursor (caret)` on an argument where `Mock.Of<T>` is used.
+
+Make sure you put the `cursor` on the word `Mock` or just in front of it.
+
+```csharp
+var systemUnderTest = new DemoClassOnly(Mock.Of<ILogger<DemoClassOnly>>(),
+                                        It.IsAny<string>(),
+                                        It.IsAny<int>(),
+                                        It.IsAny<int?>(),
+                                <cursor>Mock.Of<ICurrentUser>(),
+                                        Mock.Of<Func<SomeCommand>>(),
+                                        Mock.Of<Func<IValidator<InvoiceDetailsInput>>>());
+```
+
+![Mock of to new mock Demo](Doco/Assets/MockOfToNewMock.gif)
+
+Refactor output:
+
+```csharp
+var currentUserMock = new Mock<ICurrentUser>();
+var systemUnderTest = new DemoClassOnly(Mock.Of<ILogger<DemoClassOnly>>(),
+                                        It.IsAny<string>(),
+                                        It.IsAny<int>(),
+                                        It.IsAny<int?>(),
+                                        currentUserMock.Object,
                                         Mock.Of<Func<SomeCommand>>(),
                                         Mock.Of<Func<IValidator<InvoiceDetailsInput>>>());
 ```
