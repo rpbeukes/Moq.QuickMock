@@ -89,6 +89,16 @@ Put the `cursor (caret)` on an argument where `Mock.Of<T>` is used.
 
 Make sure you put the `cursor` on the word `Mock` or just in front of it.
 
+```csharp
+var systemUnderTest = new DemoClassOnly(Mock.Of<ILogger<DemoClassOnly>>(),
+                                        It.IsAny<string>(),
+                                        It.IsAny<int>(),
+                                        It.IsAny<int?>(),
+                                <cursor>Mock.Of<ICurrentUser>(),
+                                        Mock.Of<Func<SomeCommand>>(),
+                                        Mock.Of<Func<IValidator<InvoiceDetailsInput>>>());
+```
+
 ![Mock of to new mock Demo](Doco/Assets/MockOfToNewMock.gif)
 
 Refactor output:
