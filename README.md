@@ -86,7 +86,8 @@ var systemUnderTest = new DemoClassOnly(Mock.Of<ILogger<DemoClassOnly>>(),
 ### Mock.Of<T> to new Mock<T> (Moq)
 
 Put the `cursor (caret)` on an argument where `Mock.Of<T>` is used.
-Make sure you put the `cursor` on the work `Mock` or just in front of it.
+
+Make sure you put the `cursor` on the word `Mock` or just in front of it.
 
 ![Mock of to new mock Demo](Doco/Assets/QuickMockCtor.gif)
 
