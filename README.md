@@ -27,6 +27,8 @@ public void TheTestFunction()
 
 to this via `Mock ctor (Moq)` refactor:
 
+![kMockCtorDemo](Doco/MockCtor.gif)
+
 **MyTests.cs**:
 ```
 ...
