@@ -76,7 +76,7 @@ var systemUnderTest = new DemoClassOnly(<cursor>);
 
 Find `Quick mock ctor (Moq)` Refactor Menu Options.
 
-![Quick Mock Ctor Demo](Doco/Assets/QuickMockCtor.gif)
+![Quick Mock Ctor Demo](Doco/Assets/QuickMockCtorr.gif)
 
 Refactor output:
 
@@ -94,6 +94,8 @@ var systemUnderTest = new DemoClassOnly(Mock.Of<ILogger<DemoClassOnly>>(),
 ### Mock.Of&lt;T&gt; to new Mock&lt;T&gt; (Moq)
 
 Put the `cursor (caret)` on an argument where `Mock.Of<T>` is used.
+
+Find `Mock.Of<T> to new Mock<T> (Moq)` Refactor Menu Options.
 
 Make sure you put the `cursor` on the word `Mock` or just in front of it.
 
@@ -127,6 +129,8 @@ var systemUnderTest = new DemoClassOnly(Mock.Of<ILogger<DemoClassOnly>>(),
 ### mock.Object to Mock.Of&lt;T&gt;
 
 Put the `cursor (caret)` on an argument where `mock.Object` is used.
+
+Find `mock.Object to new Mock.Of<T> (Moq)` Refactor Menu Options.
 
 Will only remove the variable if it is a local variable, and instantiated the a `Mock` object on th e sane line.
 
