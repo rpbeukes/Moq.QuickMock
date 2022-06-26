@@ -76,7 +76,7 @@ var systemUnderTest = new DemoClassOnly(<cursor>);
 
 Find `Quick mock ctor (Moq)` Refactor Menu Options.
 
-![Quick Mock Ctor Demo](Doco/Assets/QuickMockCtorr.gif)
+![Quick Mock Ctor Demo](Doco/Assets/QuickMockCtor.gif)
 
 Refactor output:
 
