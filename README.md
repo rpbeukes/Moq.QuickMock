@@ -128,23 +128,12 @@ var systemUnderTest = new DemoClassOnly(Mock.Of<ILogger<DemoClassOnly>>(),
 ---
 
 ## Know issues
-- Extension generates `Fully qualified type` names.
-This can be tolerated by using `Simply name` refactor provided by Visual Studio.
-  eg:
-```
-   var c = new CodeWithBigConstructor(Mock.Of<App.That.Will.Take.Over.The.World.ISecureUser>());
-```
-The dream:
-```
-   var c = new CodeWithBigConstructor(Mock.Of<ISecureUser>());
-```
 - Currently only supports C#, will need to give the [VB.Net](https://docs.microsoft.com/en-us/dotnet/visual-basic/) folks more love.
 ---
 
 ## ToDos
 
 ### Tasks (Priority ordered)
-- Remove fully qualified types.
 - add an icon.
 - deploy to [Visual Studio Marketplace](https://marketplace.visualstudio.com/), so one gets updates automagically.
 - Get it working for [VB.Net](https://docs.microsoft.com/en-us/dotnet/visual-basic/) .
