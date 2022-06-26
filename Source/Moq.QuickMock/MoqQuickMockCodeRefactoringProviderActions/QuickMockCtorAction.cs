@@ -23,7 +23,8 @@ namespace Moq.QuickMock.MoqQuickMockCodeRefactoringProviderActions
             ctorWithMostParameters.FindReferenceAndValueTypes(
                 onFoundReferenceType: paramSymbol =>
                 {
-                    var moqString = $"Mock.Of<{paramSymbol}>()";
+                    var paramSymbolWithoutFullyQualifiedNames = paramSymbol.Type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+                    var moqString = $"Mock.Of<{paramSymbolWithoutFullyQualifiedNames}>()";
                     newArgsList.Add(moqString);
                 },
                 onFoundValueType: (paramSymbol, suggestedArgumentText) =>
