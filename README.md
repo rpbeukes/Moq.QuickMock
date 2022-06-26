@@ -13,7 +13,8 @@ Download `Moq.QuickMock.vsix` from latest successful [build](https://github.com/
 ## Available Refactors
 - [Mock ctor](https://github.com/rpbeukes/Moq.QuickMock#mock-ctor-moq)
 - [Quick mock ctor](https://github.com/rpbeukes/Moq.QuickMock#quick-mock-ctor-moq)
-- [Mock.Of&lt;T&gt; to new Mock&lt;T&gt;](https://github.com/rpbeukes/Moq.QuickMock#mockof-to-new-mock-moq)
+- [Mock.Of&lt;T&gt; to new Mock&lt;T&gt;](https://github.com/rpbeukes/Moq.QuickMock#mockoft-to-new-mockt-moq)
+- [mock.Object to Mock.Of&lt;T&gt;](https://github.com/rpbeukes/Moq.QuickMock#mockobject-to-mockoft)
 
 ---
 
@@ -90,7 +91,7 @@ var systemUnderTest = new DemoClassOnly(Mock.Of<ILogger<DemoClassOnly>>(),
 ```
 
 ---
-### Mock.Of<T> to new Mock<T> (Moq)
+### Mock.Of&lt;T&gt; to new Mock&lt;T&gt; (Moq)
 
 Put the `cursor (caret)` on an argument where `Mock.Of<T>` is used.
 
@@ -123,28 +124,73 @@ var systemUnderTest = new DemoClassOnly(Mock.Of<ILogger<DemoClassOnly>>(),
 
 ---
 
+### mock.Object to Mock.Of&lt;T&gt;
+
+Put the `cursor (caret)` on an argument where `mock.Object` is used.
+
+Will only remove the variable if it is a local variable, and instantiated the a `Mock` object on th e sane line.
+
+```csharp
+// this will not be removed
+Mock<Func<SomeCommand>> _cmdFactoryMock = new Mock<Func<SomeCommand>>();
+
+[TestMethod()]
+public void DemoClassOnlyTest_MockObject_to_MockOfT_local_variable()
+{
+   // this will not be removed
+   Mock<ICurrentUser> currentUserMock;
+   currentUserMock = new Mock<ICurrentUser>();
+
+   // this variable will be removed
+   var validatorFactoryMock = new Mock<Func<IValidator<InvoiceDetailsInput>>>();
+   
+
+   var systemUnderTest = new DemoClassOnly(Mock.Of<ILogger<DemoClassOnly>>(),
+                                          It.IsAny<string>(),
+                                          It.IsAny<int>(),
+                                          It.IsAny<int?>(),
+                                          currentUserMock.Object,
+                                          _cmdFactoryMock.Object,
+                                          validatorFactoryMock.Object);
+}
+```
+
+![Mock Object to Mock Of remove local variable Demo](Doco/Assets/MockObjectToMockOfRemoveLocalVariable.gif)
+
+Refactor output:
+
+```csharp
+// this will not be removed
+Mock<Func<SomeCommand>> _cmdFactoryMock = new Mock<Func<SomeCommand>>();
+
+[TestMethod()]
+public void DemoClassOnlyTest_MockObject_to_MockOfT_local_variable()
+{
+   // this will not be removed
+   Mock<ICurrentUser> currentUserMock;
+   currentUserMock = new Mock<ICurrentUser>();
+   var systemUnderTest = new DemoClassOnly(Mock.Of<ILogger<DemoClassOnly>>(),
+                                          It.IsAny<string>(),
+                                          It.IsAny<int>(),
+                                          It.IsAny<int?>(),
+                                          Mock.Of<ICurrentUser>(),
+                                          Mock.Of<Func<SomeCommand>>(),
+                                          Mock.Of<Func<IValidator<InvoiceDetailsInput>>>());
+}
+```
+---
+
 **NOTE:** This extension will only change code following the file naming convention `*tests.cs` eg: `TheseAreMyHeroTests.cs`.
 
 ---
 
 ## Know issues
-- Extension generates `Fully qualified type` names.
-This can be tolerated by using `Simply name` refactor provided by Visual Studio.
-  eg:
-```
-   var c = new CodeWithBigConstructor(Mock.Of<App.That.Will.Take.Over.The.World.ISecureUser>());
-```
-The dream:
-```
-   var c = new CodeWithBigConstructor(Mock.Of<ISecureUser>());
-```
 - Currently only supports C#, will need to give the [VB.Net](https://docs.microsoft.com/en-us/dotnet/visual-basic/) folks more love.
 ---
 
 ## ToDos
 
 ### Tasks (Priority ordered)
-- Remove fully qualified types.
 - add an icon.
 - deploy to [Visual Studio Marketplace](https://marketplace.visualstudio.com/), so one gets updates automagically.
 - Get it working for [VB.Net](https://docs.microsoft.com/en-us/dotnet/visual-basic/) .
