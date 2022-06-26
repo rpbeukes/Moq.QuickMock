@@ -21,15 +21,15 @@ namespace Moq.QuickMock.MoqQuickMockCodeRefactoringProviderActions
 
             var newVarList = new List<StatementSyntax>();
             var newArgsList = new List<string>();
-
+            
             ctorWithMostParameters.FindReferenceAndValueTypes(
                 onFoundReferenceType: paramSymbol =>
                 {
                     var newVarName = $"{paramSymbol.Name}Mock";
                     var declaringStatement = $"var {newVarName} = new Mock<{paramSymbol.Type}>();{Environment.NewLine}";
                     var newVar = SyntaxFactory.ParseStatement(declaringStatement)
-                                     // this seems to be the magic to remove Full Qualified Names
                                      .WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation);
+
                     newVarList.Add(newVar);
                     newArgsList.Add($"{newVarName}.Object");
                 },
@@ -43,6 +43,7 @@ namespace Moq.QuickMock.MoqQuickMockCodeRefactoringProviderActions
                     newArgsList.Add(suggestedArgumentText);
                 });
 
+            
             var editor = await UpdateEditorHelpers.ReplaceArguments(document, argumentList, newArgsList);
 
             var location = argumentList.Ancestors().OfType<LocalDeclarationStatementSyntax>().First();

@@ -17,7 +17,7 @@ namespace Moq.QuickMock.Extensions
             foreach (var paramSymbol in ctorWithMostParameters)
             {
                 var paramType = paramSymbol.Type;
-                var isString = paramType.Name.ToLowerInvariant() == "string";
+                var isString = paramType.Name.Equals("string", StringComparison.OrdinalIgnoreCase);
 
                 if (!isString && paramType.IsReferenceType)
                     onFoundReferenceType(paramSymbol);
