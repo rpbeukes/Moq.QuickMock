@@ -32,7 +32,7 @@ namespace Moq.QuickMock
                   // this refactor is only available in tests files eg: "*Tests.cs"
                   node.SyntaxTree.FilePath.ToLower().Contains("tests.cs")
                     && node is IdentifierNameSyntax identifierName
-                    && identifierName?.Identifier.ValueText == "Mock"
+                    && (identifierName?.Identifier.ValueText.Equals("Mock", StringComparison.OrdinalIgnoreCase) ?? false)
                     && identifierName.Ancestors().OfType<ArgumentListSyntax>().FirstOrDefault() is ArgumentListSyntax argtList
                     && argtList.Parent is ObjectCreationExpressionSyntax
             ;
