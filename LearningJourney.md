@@ -34,6 +34,7 @@ Google: [mads kristensen extensions](https://www.google.com/search?q=mads+kriste
 - [actions/upload-artifact](https://github.com/actions/upload-artifact)
 - https://stackoverflow.com/questions/69274658/github-action-nuget-restore-net-4-7-2
 - https://cezarypiatek.github.io/post/develop-vsextension-with-github-actions/
+- [VSIX Version](https://github.com/marketplace/actions/vsix-version) 
 - [Extension versioning](https://cezarypiatek.github.io/post/develop-vsextension-with-github-actions/#how-to-set-the-version-for-vsix-file)
 
 ## Various resources:
