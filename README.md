@@ -5,6 +5,9 @@ Small Visual Studio 2022 extension, helping to write [Moq](https://github.com/mo
 
 ---
 
+## Visual Studio Marketplace
+[Moq.QuickMock 2022](https://marketplace.visualstudio.com/items?itemName=Rpbeukes.MoqQuickMock2022)
+
 ## Download Moq.QuickMock.vsix and install
 Download `Moq.QuickMock.vsix` from latest successful [build](https://github.com/rpbeukes/Moq.QuickMock/actions/workflows/CI_main.yml?query=branch%3Amain+is%3Asuccess).
 
@@ -195,7 +198,7 @@ public void DemoClassOnlyTest_MockObject_to_MockOfT_local_variable()
 ## ToDos
 
 ### Tasks (Priority ordered)
-- deploy to [Visual Studio Marketplace](https://marketplace.visualstudio.com/), so one gets updates automagically.
+- pipeline to auto deploy to [Visual Studio Marketplace](https://marketplace.visualstudio.com/)
 - Get it working for [VB.Net](https://docs.microsoft.com/en-us/dotnet/visual-basic/) .
 
 ### Investigations
