@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="Moq.QuickMock..a1fd9319-baa0-4dd5-9ff1-ab119bd54180" Version="1.0.0" Language="en-US" Publisher="Ruan Beukes"/>
+    <Identity Id="Moq.QuickMock..a1fd9319-baa0-4dd5-9ff1-ab119bd54180" Version="1.0.4" Language="en-US" Publisher="Ruan Beukes"/>
     <DisplayName>Moq.QuickMock 2022</DisplayName>
-    <Description xml:space="preserve">This refactoring extension is used in unit tests, with Moq.</Description>
+    <Description xml:space="preserve">This refactoring extension is used in C# unit tests, with Moq.</Description>
     <MoreInfo>https://github.com/rpbeukes/Moq.QuickMock</MoreInfo>
     <Icon>Resources\Refactoring128.png</Icon>
     <PreviewImage>Resources\Refactoring128.png</PreviewImage>

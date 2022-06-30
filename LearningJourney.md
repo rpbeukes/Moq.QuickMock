@@ -11,12 +11,21 @@ Google: [mads kristensen extensions](https://www.google.com/search?q=mads+kriste
 ## Visual Studio Extensions Marketplace
 [Marketplace](https://marketplace.visualstudio.com/)
 
-## Download
+## Tools
 - [Extensibility Essentials 2022](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.ExtensibilityEssentials2022)
 - [Known Monikers Explorer 2022](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.KnownMonikersExplorer2022)
+- [Code Analysis With Roslyn's Syntax Trees](https://www.codingzee.com/2021/04/c-code-analysis-with-roslyn-syntax-trees.html)
+  -  VS `Syntax Visualizer`: 
+      
+      > If you've already installed the .NET Compiler Platform SDK for your VS, use the following path to access this window: View -> Other Windows -> Syntax Visualizer.
+  - VS `DGML editor`
+     >  To install it, open the Visual Studio Installer. Locate the required VS installation instance, and click More -> Modify. Then switch to the following tab: Individual Component -> Code tools -> DGML editor.
+
 
 ## Github
 - [mads](https://github.com/madskristensen)
+- [RefactoringEssentials](https://github.com/icsharpcode/RefactoringEssentials) - thanx to icsharpcode community.
+- [Mocking.Helpers](https://github.com/MrLuje/Mocking.Helpers) - thanx to MrLuje.
 - [moq.autocomplete](https://github.com/Litee/moq.autocomplete) - thanx to Litee (Andrey Lipatkin)
 
 ## Github Actions - Build Pipeline
@@ -26,8 +35,10 @@ Google: [mads kristensen extensions](https://www.google.com/search?q=mads+kriste
 - https://stackoverflow.com/questions/69274658/github-action-nuget-restore-net-4-7-2
 - https://cezarypiatek.github.io/post/develop-vsextension-with-github-actions/
 - [VSIX Version](https://github.com/marketplace/actions/vsix-version) 
+- [Extension versioning](https://cezarypiatek.github.io/post/develop-vsextension-with-github-actions/#how-to-set-the-version-for-vsix-file)
 
 ## Various resources:
+- https://roslynquoter.azurewebsites.net/
 - https://stackoverflow.com/questions/43804765/roslyn-get-identifiername-in-objectcreationexpressionsyntax
 - https://docs.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/get-started/syntax-transformation
 - https://docs.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.csharp.syntax.objectcreationexpressionsyntax?view=roslyn-dotnet-4.2.0
@@ -95,3 +106,6 @@ I left my [solution](https://github.com/dotnet/roslyn-sdk/issues/889#issuecommen
 Investigation tools: 
 - [ms sysinternals](https://docs.microsoft.com/en-us/sysinternals/)
 -  [Microsoft Child Process Debugging Power Tool 2022](https://marketplace.visualstudio.com/items?itemName=vsdbgplat.MicrosoftChildProcessDebuggingPowerTool2022)
+
+## Video to Gif conversion
+[cloudconvert](https://cloudconvert.com/mp4-to-gif)
