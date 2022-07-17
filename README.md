@@ -205,3 +205,7 @@ public void DemoClassOnlyTest_MockObject_to_MockOfT_local_variable()
 
 ### Investigations
 - Unit testing extensions (or something like that).
+
+<div style="text-align:right">
+<small><a href="https://www.flaticon.com/free-icons/coffee" title="coffee icons">Coffee icons created by Freepik - Flaticon</a><small>
+</div>
