@@ -1,9 +1,6 @@
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/rpbeukes/Moq.QuickMock/CI/main)](https://github.com/rpbeukes/Moq.QuickMock/actions/workflows/CI_main.yml?query=branch%3Amain+) [![GitHub](https://img.shields.io/github/license/rpbeukes/Moq.QuickMock)](https://github.com/rpbeukes/Moq.QuickMock/blob/main/LICENSE) [![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/Rpbeukes.MoqQuickMock2022)](https://marketplace.visualstudio.com/items?itemName=Rpbeukes.MoqQuickMock2022)
 
-<img  src="./Doco/Assets/coffee.png" alt="drawing" width="25"/>
-<a href="https://buy.stripe.com/eVa7w16MSehn9QA3cc" target="_blank"> Pay it forward 
-</a> 
-<img  src="./Doco/Assets/coffee.png" alt="drawing" width="25"/>
+<img  src="./Doco/Assets/coffee.png" alt="drawing" width="25"/><a href="https://buy.stripe.com/eVa7w16MSehn9QA3cc" target="_blank"> Pay it forward </a> <img  src="./Doco/Assets/coffee.png" alt="drawing" width="25"/>
 
 # Moq.QuickMock
 Small Visual Studio 2022 extension, helping to write [Moq](https://github.com/moq/moq) tests for C#.
