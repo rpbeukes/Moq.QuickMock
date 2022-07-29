@@ -46,7 +46,7 @@ Google: [mads kristensen extensions](https://www.google.com/search?q=mads+kriste
 - https://blog.emirosmanoski.mk/2020-11-02-Roslyn-Roslyn-Analyzer-Part2/
 
 ---
-## Toubleshoot
+## Troubleshoot
 
 ### VS Template build issue
 After creating a new VS solution via template `Code Refactor (.NET Standard)`, it could not build.
