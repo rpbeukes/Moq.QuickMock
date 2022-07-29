@@ -96,7 +96,7 @@ Found very good help from Microsoft's [Troubleshoot Breakpoints in the Visual St
 - In the searchbox, I typed `moq.`, and I saw that `Symbol Status` indicated: `file not found`.
 - Then `Right-Clicked` on my file and choose `Open File Location`.
 - Then dig around in there, and deleted my whole folder 
-  eg: `C:\Users\{YourUser}}\AppData\Local\Microsoft\VisualStudio\17.0_ad6c95ffRoslyn`
+  eg: `C:\Users\{YourUser}\AppData\Local\Microsoft\VisualStudio\17.0_ad6c95ffRoslyn`
 - It seemed like a new VS Instance, with the correct extensions and now it knows how to load the symbols again. 
 
 More options [here](https://github.com/dotnet/roslyn-sdk/issues/889#issuecomment-929608681) on github to solve the issue a different way.
