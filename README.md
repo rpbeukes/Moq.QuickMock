@@ -39,7 +39,7 @@ public DemoClassOnly(ILogger<DemoClassOnly> logger,
 
 ## Refactors
 
-All these examples live in **MyTestDemoClassOnlyTests.cs**.
+All these examples live in [MyTestDemoClassOnlyTests.cs](https://github.com/rpbeukes/Moq.QuickMock/blob/main/DemoProject/DemoProjectUnitTests/DemoClassOnlyTests.cs).
 
 ### Mock ctor (Moq)
 
