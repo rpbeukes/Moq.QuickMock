@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.QuickMock", "Source\Moq
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.QuickMock.Vsix", "Source\Moq.QuickMock.Vsix\Moq.QuickMock.Vsix.csproj", "{0927C927-BFAC-498D-B8AF-3710311DEBAF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moq.QuickMock.Vsix.Tests", "Source\Moq.QuickMock.Vsix.Tests\Moq.QuickMock.Vsix.Tests.csproj", "{60C12679-B381-467E-876C-7D19933E64C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{0927C927-BFAC-498D-B8AF-3710311DEBAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0927C927-BFAC-498D-B8AF-3710311DEBAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0927C927-BFAC-498D-B8AF-3710311DEBAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60C12679-B381-467E-876C-7D19933E64C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60C12679-B381-467E-876C-7D19933E64C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60C12679-B381-467E-876C-7D19933E64C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60C12679-B381-467E-876C-7D19933E64C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
