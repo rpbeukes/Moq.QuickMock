@@ -58,9 +58,6 @@ namespace DemoProject.Tests
 }
 ";
 
-        //var systemUnderTest = new DemoForUTests(It.IsAny<string>(), It.IsAny<int>());
-        //var systemUnderTest = new DemoForUTests(It.IsAny<string stringValue>(), It.IsAny<int intValue>());
-
         var expectedDiagnostic = DiagnosticResult
                                     .CompilerError("CS7036")
                                     .WithSpan(16, 39, 16, 52)
