@@ -65,17 +65,30 @@ namespace Moq.QuickMock.Test
                 test.CodeActionEquivalenceKey = actionTitle;
             }
 
-            var srce = test.TestState.Sources[0];
-            srce.filename = srce.filename.Replace("Tests0", "Tests");
-            test.TestState.Sources[0] = srce;
+            // Example of the file name received here
+            // "/0/TheTests0.cs";
+            // remove the 0 to make the actual verification happen.
+            if (test.TestState.Sources.Any())
+            {
+                for (int i = 0; i < test.TestState.Sources.Count; i++)
+                {
+                    var srce = test.TestState.Sources[i];
+                    srce.filename = srce.filename.Replace("Tests0", "Tests");
+                    test.TestState.Sources[i] = srce;
+                }
+            }
 
-            srce = test.FixedState.Sources[0];
-            srce.filename = srce.filename.Replace("Tests0", "Tests");
-            test.FixedState.Sources[0] = srce;
+            if (test.FixedState.Sources.Any())
+            {
+                for (int i = 0; i < test.FixedState.Sources.Count; i++)
+                {
+                    var srce = test.FixedState.Sources[i];
+                    srce.filename = srce.filename.Replace("Tests0", "Tests");
+                    test.FixedState.Sources[i] = srce;
+                }
+            }
 
             await test.RunAsync();
-
-
         }
     }
 }
