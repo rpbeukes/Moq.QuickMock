@@ -7,9 +7,9 @@ namespace Moq.QuickMock.Helpers
 {
     public class MoqSyntaxHelpers
     {
-        public static string CreateIsAnyMockString(IParameterSymbol paramSymbol)
+        public static string CreateIsAnyMockString(string typeValue)
         {
-            return $"It.IsAny<{paramSymbol}>()";
+            return $"It.IsAny<{typeValue}>()";
         }
     }
 }

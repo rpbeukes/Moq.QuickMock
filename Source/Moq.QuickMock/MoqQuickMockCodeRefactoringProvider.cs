@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Moq.QuickMock.MoqQuickMockCodeRefactoringProviderActions;
 using System;
 using System.Composition;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,6 +25,9 @@ namespace Moq.QuickMock
             // this refactor is only available in tests files eg: "*Tests.cs"
             if (node.SyntaxTree.FilePath.ToLower().Contains("tests.cs"))
             {
+                Debug.WriteLine($"node: {node}");
+                Debug.WriteLine($"node: {node.GetType()}");
+
                 if (node is ArgumentListSyntax argumentList)
                 {
                     var isCreatingNewObject = argumentList.Parent.IsKind(SyntaxKind.ObjectCreationExpression);
@@ -45,8 +49,15 @@ namespace Moq.QuickMock
                             var ctorMethodSymbols = classDefinition.Constructors.Where(x => x.Parameters.Length > 0);
                             if (ctorMethodSymbols.Any())
                             {
-                                var quickMockCtorAction = CodeAction.Create("Quick mock ctor (Moq)", c => MoqActions.QuickMockCtor(context.Document, ctorMethodSymbols, argumentList, c));
-                                var mockCtorAction = CodeAction.Create("Mock ctor (Moq)", c => MoqActions.MockCtor(context.Document, ctorMethodSymbols, argumentList, c));
+                                var title = "Quick mock ctor (Moq)";
+                                var quickMockCtorAction = CodeAction.Create(title,
+                                                                            c => MoqActions.QuickMockCtor(context.Document, ctorMethodSymbols, argumentList, c),
+                                                                            equivalenceKey: title);
+                                
+                                title = "Mock ctor (Moq)";
+                                var mockCtorAction = CodeAction.Create(title,
+                                                                       c => MoqActions.MockCtor(context.Document, ctorMethodSymbols, argumentList, c),
+                                                                       equivalenceKey: title);
 
                                 // Register this code action.
                                 context.RegisterRefactoring(quickMockCtorAction);

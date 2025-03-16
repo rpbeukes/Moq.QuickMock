@@ -23,7 +23,7 @@ namespace Moq.QuickMock.Extensions
                     onFoundReferenceType(paramSymbol);
                 else if (isString || paramType.IsValueType)
                 {
-                    var suggestedArgumentText = MoqSyntaxHelpers.CreateIsAnyMockString(paramSymbol);
+                    var suggestedArgumentText = MoqSyntaxHelpers.CreateIsAnyMockString(paramType.ToString());
                     onFoundValueType(paramSymbol, suggestedArgumentText);
                 }
                 else
