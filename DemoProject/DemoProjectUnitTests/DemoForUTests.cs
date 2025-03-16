@@ -1,25 +1,19 @@
-﻿using System;
+﻿using Moq;
+using System;
 
 namespace DemoProject.Tests
 {
-    /// <summary>
-    /// Demo for uni tests
-    /// </summary>
     public class DemoForUTests
     {
         public DemoForUTests(string stringValue, int intValue)
-        {
-
-        }
+        { }
     }
 
     public class DemoForUTTests
     {
-        public void DemoForUT_Quick_mock()
+        public void DemoForUTTests_test()
         {
-
             var systemUnderTest = new DemoForUTests();
-
         }
     }
 }

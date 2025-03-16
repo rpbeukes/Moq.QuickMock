@@ -21,22 +21,17 @@ using System;
 
 namespace DemoProject.Tests
 {
-    /// <summary>
-    /// Demo for uni tests
-    /// </summary>
     public class DemoForUTests
     {
         public DemoForUTests(string stringValue, int intValue)
-        {
-
-        }
+        { }
     }
 
     public class DemoForUTTests
     {
-        public void DemoForUT_Quick_mock()
+        public void DemoForUTTests_test()
         {
-            var systemUnderTest = new DemoForUTests({|#0:|});
+            var systemUnderTest = new DemoForUTests();
         }
     }
 }
@@ -47,20 +42,15 @@ using System;
 
 namespace DemoProject.Tests
 {
-    /// <summary>
-    /// Demo for uni tests
-    /// </summary>
     public class DemoForUTests
     {
         public DemoForUTests(string stringValue, int intValue)
-        {
-
-        }
+        { }
     }
 
     public class DemoForUTTests
     {
-        public void DemoForUT_Quick_mock()
+        public void DemoForUTTests_test()
         {
             var systemUnderTest = new DemoForUTests(It.IsAny<string>(), It.IsAny<int>());
         }
@@ -73,13 +63,13 @@ namespace DemoProject.Tests
 
         var expectedDiagnostic = DiagnosticResult
                                     .CompilerError("CS7036")
-                                    .WithSpan(21, 39, 21, 52)
+                                    .WithSpan(16, 39, 16, 52)
                                     .WithArguments("stringValue", "DemoProject.Tests.DemoForUTests.DemoForUTests(string, int)")
                                     ;
 
         var expectedRefactoring = DiagnosticResult
                                     .CompilerError("Refactoring")
-                                    .WithSpan(21, 53, 21, 53)
+                                    .WithSpan(16, 53, 16, 53)
                                     ;
 
         await VerifyCS.VerifyRefactoringAsync(test,
