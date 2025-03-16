@@ -36,7 +36,7 @@ jobs:
         uses: microsoft/setup-msbuild@v1.1
       
       - name: setup nuget
-        uses: nuget/setup-nuget@v1
+        uses: nuget/setup-nuget@v2
         with:
           nuget-version: '6.x'
       
