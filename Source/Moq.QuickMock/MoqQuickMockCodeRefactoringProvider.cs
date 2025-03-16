@@ -28,9 +28,8 @@ namespace Moq.QuickMock
             // this refactor is only available in tests files eg: "*Tests.cs"
             if (node.SyntaxTree.FilePath.ToLower().Contains("tests.cs"))
             {
-                Debug.WriteLine($"node: {node}");
-                Debug.WriteLine($"node: {node.GetType()}");
-
+                //Debug.WriteLine($"node: {node}");
+                //Debug.WriteLine($"node: {node.GetType()}");
                 if (node is ArgumentListSyntax argumentList)
                 {
                     var isCreatingNewObject = argumentList.Parent.IsKind(SyntaxKind.ObjectCreationExpression);
