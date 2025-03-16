@@ -1,8 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DemoProject;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Moq;
 using Microsoft.Extensions.Logging;
 
