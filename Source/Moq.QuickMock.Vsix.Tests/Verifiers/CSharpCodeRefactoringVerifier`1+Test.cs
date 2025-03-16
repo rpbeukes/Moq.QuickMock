@@ -25,11 +25,7 @@ namespace Moq.QuickMock.Test
                     
                     return solution;
                 });
-
-                //DefaultFilePathPrefix
-                //DefaultFilePath
             }
-
             // custom code added for this solution
             protected override string DefaultFilePathPrefix => "/0/TheTests";
             protected override string DefaultFilePath => DefaultFilePathPrefix + "." + DefaultFileExt;
