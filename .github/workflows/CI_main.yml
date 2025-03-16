@@ -51,7 +51,7 @@ jobs:
         run:  ren ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock.Vsix.vsix Moq.QuickMock.${{ env.APP_VERSION }}.vsix
 
       - name: create artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Moq.QuickMock.${{ env.APP_VERSION }}.vsix
           path: ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock.${{ env.APP_VERSION }}.vsix
