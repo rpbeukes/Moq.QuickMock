@@ -12,9 +12,10 @@ namespace Moq.QuickMock.Tests;
 [TestClass]
 public class MoqQuickMockCodeRefactoringProviderTests
 {
-
+    // This test still fails with syntax node differences which is under investigation
+    // all testing is done manually :(
     [TestMethod]
-    public async Task TriggerBothDiagnosticsAndCodeFix()
+    public async Task TriggerCodeRefactoring()
     {
         var test = @"
 using System;
