@@ -82,15 +82,10 @@ namespace DemoProject.Tests
                                     .WithSpan(21, 53, 21, 53)
                                     ;
 
-
-        //var rrr = new DiagnosticResultSpan
-        //{
-        //    
-        //}
         await VerifyCS.VerifyRefactoringAsync(test,
                                               fixtest,
                                               [expectedDiagnostic, expectedRefactoring],
-                                              actionTitle: "Quick mock ctor (Moq)",
+                                              actionTitle: MoqQuickMockCodeRefactoringProvider.QuickMockCtorTitle,
                                               testBehaviors: TestBehaviors.SkipGeneratedCodeCheck);
     }
 }

@@ -15,6 +15,9 @@ namespace Moq.QuickMock
     [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(MoqQuickMockCodeRefactoringProvider)), Shared]
     public class MoqQuickMockCodeRefactoringProvider : CodeRefactoringProvider
     {
+        public static string QuickMockCtorTitle = "Quick mock ctor (Moq)";
+        public static string MockCtorTitle = "Mock ctor (Moq)";
+
         public override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
@@ -36,30 +39,30 @@ namespace Moq.QuickMock
                         var document = context.Document;
                         var semanticModel = await document.GetSemanticModelAsync(context.CancellationToken);
                         var objectCreationExpressionSyntax = argumentList.Parent as ObjectCreationExpressionSyntax;
-                        
+
                         if (objectCreationExpressionSyntax is null) return;
-                        
+
                         var typeInfo = semanticModel.GetTypeInfo(objectCreationExpressionSyntax);
                         var classDefinition = typeInfo.ConvertedType as INamedTypeSymbol;
-                        
+
                         if (classDefinition is null) return;
-                        
+
                         if (classDefinition.TypeKind == TypeKind.Class && classDefinition.Constructors.Any())
                         {
                             var ctorMethodSymbols = classDefinition.Constructors.Where(x => x.Parameters.Length > 0);
                             if (ctorMethodSymbols.Any())
                             {
-                                var title = "Quick mock ctor (Moq)";
+                                var title = QuickMockCtorTitle;
                                 var quickMockCtorAction = CodeAction.Create(title,
                                                                             c => MoqActions.QuickMockCtor(context.Document, ctorMethodSymbols, argumentList, c),
                                                                             equivalenceKey: title);
-                                
+
                                 title = "Mock ctor (Moq)";
                                 var mockCtorAction = CodeAction.Create(title,
                                                                        c => MoqActions.MockCtor(context.Document, ctorMethodSymbols, argumentList, c),
                                                                        equivalenceKey: title);
 
-                                // Register this code action.
+                                // Register these code actions.
                                 context.RegisterRefactoring(quickMockCtorAction);
                                 context.RegisterRefactoring(mockCtorAction);
                             }
