@@ -59,20 +59,35 @@ namespace DemoProject.Tests
 }
 ";
 
-        var expectedDiagnostic = DiagnosticResult
-                                    .CompilerError("CS7036")
-                                    .WithSpan(16, 39, 16, 52)
-                                    .WithArguments("stringValue", "DemoProject.Tests.DemoForUTests.DemoForUTests(string, int)")
-                                    ;
+        //var expectedDiagnostic = DiagnosticResult
+        //                            .CompilerError("CS7036")
+        //                            .WithSpan(16, 39, 16, 52)
+        //                            .WithArguments("stringValue", "DemoProject.Tests.DemoForUTests.DemoForUTests(string, int)")
+        //                            ;
 
-        var expectedRefactoring = DiagnosticResult
-                                    .CompilerError("Refactoring")
-                                    .WithSpan(16, 53, 16, 53)
-                                    ;
+        //var expectedRefactoring = DiagnosticResult
+        //                            .CompilerError("Refactoring")
+        //                            .WithSpan(16, 53, 16, 53)
+        ;
+
+        DiagnosticResult[] expectedDiagnostic =
+        [
+           DiagnosticResult.CompilerError("CS7036").WithSpan(16, 39, 16, 52).WithArguments("stringValue", "DemoProject.Tests.DemoForUTests.DemoForUTests(string, int)"),
+
+           DiagnosticResult.CompilerError("Refactoring").WithSpan(16, 53, 16, 53),
+
+           // Moq errors because the Moq package is not installed,
+           // not an issue as the syntax validation is more important.
+           //DiagnosticResult.CompilerError("CS0103").WithSpan(16, 53, 16, 55).WithArguments("It"),
+           //DiagnosticResult.CompilerError("CS0103").WithSpan(16, 73, 16, 75).WithArguments("It"),
+
+           
+
+        ];
 
         await VerifyCS.VerifyRefactoringAsync(test,
                                               fixtest,
-                                              [expectedDiagnostic, expectedRefactoring],
+                                              expectedDiagnostic,
                                               actionTitle: MoqQuickMockCodeRefactoringProvider.QuickMockCtorTitle,
                                               testBehaviors: TestBehaviors.SkipGeneratedCodeCheck);
     }

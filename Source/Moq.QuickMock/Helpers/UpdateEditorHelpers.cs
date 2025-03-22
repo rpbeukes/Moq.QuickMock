@@ -15,17 +15,31 @@ namespace Moq.QuickMock.Helpers
         {
             var editor = await DocumentEditor.CreateAsync(document);
 
-            var modifiedArguments = new SeparatedSyntaxList<ArgumentSyntax>().AddRange
-            (
-                new ArgumentSyntax[]
-                {
-                        SyntaxFactory.Argument(SyntaxFactory.ParseExpression($"{string.Join($", ", newArgsList)}"))
-                }
-            );
+            var modifiedArguments = new SeparatedSyntaxList<ArgumentSyntax>();
+
+            foreach (var arg in newArgsList)
+            {
+                modifiedArguments = modifiedArguments.Add(SyntaxFactory.Argument(SyntaxFactory.ParseExpression(arg)));
+            }
 
             var modifiedArgumentList = SyntaxFactory.ArgumentList(modifiedArguments);
+            
             editor.ReplaceNode(location, modifiedArgumentList);
             return editor;
+
+            //var editor = await DocumentEditor.CreateAsync(document);
+
+            //var modifiedArguments = new SeparatedSyntaxList<ArgumentSyntax>().AddRange
+            //(
+            //    new ArgumentSyntax[]
+            //    {
+            //            SyntaxFactory.Argument(SyntaxFactory.ParseExpression($"{string.Join($", ", newArgsList)}"))
+            //    }
+            //);
+
+            //var modifiedArgumentList = SyntaxFactory.ArgumentList(modifiedArguments);
+            //editor.ReplaceNode(location, modifiedArgumentList);
+            //return editor;
         }
     }
 }
