@@ -21,7 +21,9 @@ jobs:
         run: env
 
       - name: list directories
-        run: ls
+        run: ls |
+             cd Source |
+             ls
 
       - name: setup .NET SDK
         uses: actions/setup-dotnet@v4
@@ -46,14 +48,16 @@ jobs:
       - name: restore dependencies
         run: dotnet restore
       
-      - name: build non-VSIX projects
+      - name: build non-VSIX project - Moq.QuickMock.csproj
         run: |
-          dotnet build --configuration Release --no-restore \
-            ./Moq.QuickMock/Moq.QuickMock/Source/Moq.QuickMock/Moq.QuickMock.csproj \
-            ./Moq.QuickMock/Moq.QuickMock/Source/Moq.QuickMock.Vsix.Tests/Moq.QuickMock.Vsix.Tests.csproj      
+          dotnet build --configuration Release --no-restore ./Source/Moq.QuickMock/Moq.QuickMock.csproj
+          
+      - name: build non-VSIX project - Moq.QuickMock.Vsix.Tests.csproj
+        run: |
+          dotnet build --configuration Release --no-restore ./Source/Moq.QuickMock.Vsix.Tests/Moq.QuickMock.Vsix.Tests.csproj
       
       - name: tests
-        run: dotnet test ./Moq.QuickMock/Moq.QuickMock/Source/Moq.QuickMock.Vsix.Tests/Moq.QuickMock.Vsix.Tests.csproj --configuration Release --no-build --verbosity normal   
+        run: dotnet test ./Source/Moq.QuickMock.Vsix.Tests/Moq.QuickMock.Vsix.Tests.csproj --configuration Release --no-build --verbosity normal   
       
       - name: build VSIX project
         run: msbuild ./Moq.QuickMock/Moq.QuickMock/Source/Moq.QuickMock.Vsix/Moq.QuickMock.Vsix.csproj /p:Configuration=Release
