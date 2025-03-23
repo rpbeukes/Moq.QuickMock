@@ -17,7 +17,7 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v4
 
-      - name: Setup .NET SDK
+      - name: setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x' # Use the desired .NET 8 version
@@ -31,26 +31,34 @@ jobs:
           $manifestXml.PackageManifest.Metadata.Identity.Version = $version
           $manifestXml.save($manifestPath)
           
-      - name: Print content of source.extension.vsixmanifest
+      - name: print content of source.extension.vsixmanifest
         run: get-content .\Source\Moq.QuickMock.Vsix\source.extension.vsixmanifest
       
       - name: print APP_VERSION
         run: Write-Host $APP_VERSION
 
-      - name: add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
+      - name: restore dependencies
+        run: dotnet restore
       
-      - name: setup nuget
-        uses: nuget/setup-nuget@v2
-        with:
-          nuget-version: '6.x'
+      - name: build project
+        run: dotnet build --configuration Release --no-restore
       
-      - name: nuget restore
-        run: nuget restore Moq.QuickMock.sln
+      - name: Run Unit Tests
+        run: dotnet test --configuration Release --no-build --verbosity normal        
+      # - name: add msbuild to PATH
+      #   uses: microsoft/setup-msbuild@v1.1
       
-      - name: build solution
-        #run:  msbuild .\Moq.QuickMock.sln -t:rebuild -verbosity:diag -property:Configuration=Release
-        run:  msbuild Moq.QuickMock.sln -t:rebuild -property:Configuration=Release
+      # - name: setup nuget
+      #   uses: nuget/setup-nuget@v2
+      #   with:
+      #     nuget-version: '6.x'
+      
+      # - name: nuget restore
+      #   run: nuget restore Moq.QuickMock.sln
+      
+      # - name: build solution
+      #   #run:  msbuild .\Moq.QuickMock.sln -t:rebuild -verbosity:diag -property:Configuration=Release
+      #   run:  msbuild Moq.QuickMock.sln -t:rebuild -property:Configuration=Release
 
       - name: rename Moq.QuickMock.Vsix.vsix to Moq.QuickMock.W.X.Y.Z.vsix
         run:  ren ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock.Vsix.vsix Moq.QuickMock.${{ env.APP_VERSION }}.vsix
