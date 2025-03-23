@@ -64,11 +64,6 @@ namespace Moq.QuickMock.Test
                 test.CodeActionEquivalenceKey = actionTitle;
             }
 
-            // HACK: the refactoring only works on files that follow naming convention:
-            //              `~/SomeFeatureTests.cs`
-            // Example of the file name received here
-            // "/0/TheTests0.cs";
-            // remove the 0 to make the actual verification happen.
             ChangeFileName(test.TestState);
             ChangeFileName(test.FixedState);
 
@@ -77,6 +72,11 @@ namespace Moq.QuickMock.Test
 
         private static void ChangeFileName(SolutionState state)
         {
+            // HACK: the refactoring only works on files that follow naming convention:
+            //              `~/SomeFeatureTests.cs`
+            // Example of the file name received here
+            // "/0/TheTests0.cs";
+            // remove the 0 to make the actual verification happen.
             if (state.Sources.Any())
             {
                 for (int i = 0; i < state.Sources.Count; i++)
