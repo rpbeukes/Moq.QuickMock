@@ -43,14 +43,14 @@ jobs:
       - name: build non-VSIX projects
         run: |
           dotnet build --configuration Release --no-restore \
-            ./Source/Moq.QuickMock/Moq.QuickMock.csproj \
-            ./Source/Moq.QuickMock.Vsix.Tests/Moq.QuickMock.Vsix.Tests.csproj      
+            ./Moq.QuickMock/Source/Moq.QuickMock/Moq.QuickMock.csproj \
+            ./Moq.QuickMock/Source/Moq.QuickMock.Vsix.Tests/Moq.QuickMock.Vsix.Tests.csproj      
       
       - name: tests
-        run: dotnet test ./Source/Moq.QuickMock.Vsix.Tests/Moq.QuickMock.Vsix.Tests.csproj --configuration Release --no-build --verbosity normal   
+        run: dotnet test ./Moq.QuickMock/Source/Moq.QuickMock.Vsix.Tests/Moq.QuickMock.Vsix.Tests.csproj --configuration Release --no-build --verbosity normal   
       
       - name: build VSIX project
-        run: msbuild ./Source/Moq.QuickMock.Vsix/Moq.QuickMock.Vsix.csproj /p:Configuration=Release
+        run: msbuild ./Moq.QuickMock/Source/Moq.QuickMock.Vsix/Moq.QuickMock.Vsix.csproj /p:Configuration=Release
 
       # - name: add msbuild to PATH
       #   uses: microsoft/setup-msbuild@v1.1
