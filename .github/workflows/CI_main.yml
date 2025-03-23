@@ -17,6 +17,11 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v4
 
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x' # Use the desired .NET 8 version
+
       - name: get Version from source.extension.vsixmanifest, and append version with run_number
         run: |
           $manifestPath = '${{ github.workspace }}\Source\Moq.QuickMock.Vsix\source.extension.vsixmanifest'
