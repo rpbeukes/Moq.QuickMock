@@ -21,7 +21,7 @@ namespace DemoProject.Tests
 {
     public class DemoForUTests
     {
-        public DemoForUTests(string stringValue, int intValue, int? nullIntValue, ICurrentUser user, Func<SomeCommand> cmdFactory)
+        public DemoForUTests(string stringValue, int intValue, int? nullIntValue, IUser user, Func<SomeCommand> cmdFactory)
         { }
     }
 
@@ -33,7 +33,7 @@ namespace DemoProject.Tests
         }
     }
 
-    public interface ICurrentUser
+    public interface IUser
     {
         string Name { get; set; }
     }
@@ -49,7 +49,7 @@ namespace DemoProject.Tests
 ";
 
         var startCode = codeTemplate.Replace("|{0}|", "new DemoForUTests()");
-        var refactoredCode = codeTemplate.Replace("|{0}|", "new DemoForUTests(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int?>(), Mock.Of<ICurrentUser>(), Mock.Of<Func<SomeCommand>>())");
+        var refactoredCode = codeTemplate.Replace("|{0}|", "new DemoForUTests(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int?>(), Mock.Of<IUser>(), Mock.Of<Func<SomeCommand>>())");
 
         DiagnosticResult[] expectedDiagnostic =
         [
