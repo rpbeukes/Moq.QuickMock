@@ -40,11 +40,18 @@ jobs:
       - name: restore dependencies
         run: dotnet restore
       
-      - name: build project
-        run: dotnet build --configuration Release --no-restore
+      - name: build non-VSIX projects
+        run: |
+          dotnet build --configuration Release --no-restore \
+            ./Source/Moq.QuickMock/Source/Moq.QuickMock/Moq.QuickMock.csproj \
+            ./Source/Moq.QuickMock/Source/Moq.QuickMock.Vsix.Tests/Moq.QuickMock.Vsix.Tests.csproj      
       
-      - name: unit tests
-        run: dotnet test --configuration Release --no-build --verbosity normal        
+      - name: tests
+        run: dotnet test ./Source/Moq.QuickMock/Source/Moq.QuickMock.Vsix.Tests/Moq.QuickMock.Vsix.Tests.csproj --configuration Release --no-build --verbosity normal   
+      
+      - name: build VSIX project
+        run: msbuild ./Source/Moq.QuickMock/Source/Moq.QuickMock.Vsix/Moq.QuickMock.Vsix.csproj /p:Configuration=Release
+
       # - name: add msbuild to PATH
       #   uses: microsoft/setup-msbuild@v1.1
       
