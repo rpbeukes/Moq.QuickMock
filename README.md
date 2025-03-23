@@ -189,6 +189,7 @@ public void DemoClassOnlyTest_MockObject_to_MockOfT_local_variable()
 ```
 ---
 
+## Test File Naming Convention
 **NOTE:** This extension will only change code following the file naming convention `*tests.cs` eg: `TheseAreMyHeroTests.cs`.
 
 ---
