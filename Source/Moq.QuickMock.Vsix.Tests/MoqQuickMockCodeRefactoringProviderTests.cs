@@ -12,12 +12,10 @@ namespace Moq.QuickMock.Tests;
 [TestClass]
 public class MoqQuickMockCodeRefactoringProviderTests
 {
-    // This test still fails with syntax node differences which is under investigation
-    // all testing is done manually :(
     [TestMethod]
     public async Task TriggerCodeRefactoring()
     {
-        var test = @"
+        var codeTemplate = @"
 using System;
 using Moq;
 namespace DemoProject.Tests
@@ -32,32 +30,14 @@ namespace DemoProject.Tests
     {
         public void DemoForUTTests_test()
         {
-            var systemUnderTest = new DemoForUTests();
+            var systemUnderTest = |{0}|;
         }
     }
 }
 ";
 
-        var fixtest = @"
-using System;
-using Moq;
-namespace DemoProject.Tests
-{
-    public class DemoForUTests
-    {
-        public DemoForUTests(string stringValue, int intValue)
-        { }
-    }
-
-    public class DemoForUTTests
-    {
-        public void DemoForUTTests_test()
-        {
-            var systemUnderTest = new DemoForUTests(It.IsAny<string>(), It.IsAny<int>());
-        }
-    }
-}
-";
+        var startCode = codeTemplate.Replace("|{0}|", "new DemoForUTests()");
+        var refactoredCode = codeTemplate.Replace("|{0}|","new DemoForUTests(It.IsAny<string>(), It.IsAny<int>())");
 
         DiagnosticResult[] expectedDiagnostic =
         [
@@ -65,8 +45,8 @@ namespace DemoProject.Tests
             DiagnosticResult.CompilerError("Refactoring").WithSpan(16, 53, 16, 53),
         ];
 
-        await VerifyCS.VerifyRefactoringAsync(test,
-                                              fixtest,
+        await VerifyCS.VerifyRefactoringAsync(startCode,
+                                              refactoredCode,
                                               expectedDiagnostic,
                                               actionTitle: MoqQuickMockCodeRefactoringProvider.QuickMockCtorTitle);
     }
