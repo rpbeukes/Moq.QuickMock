@@ -189,6 +189,7 @@ public void DemoClassOnlyTest_MockObject_to_MockOfT_local_variable()
 ```
 ---
 
+## Test File Naming Convention
 **NOTE:** This extension will only change code following the file naming convention `*tests.cs` eg: `TheseAreMyHeroTests.cs`.
 
 ---
@@ -200,11 +201,9 @@ public void DemoClassOnlyTest_MockObject_to_MockOfT_local_variable()
 ## ToDos
 
 ### Tasks (Priority ordered)
-- pipeline to auto deploy to [Visual Studio Marketplace](https://marketplace.visualstudio.com/)
-- Get it working for [VB.Net](https://docs.microsoft.com/en-us/dotnet/visual-basic/) .
-
-### Investigations
-- Unit testing extensions (or something like that).
+- More unit tests, currently only `Quick mock ctor` is are covered
+- Pipeline to auto deploy to [Visual Studio Marketplace](https://marketplace.visualstudio.com/)
+- Get it working for [VB.Net](https://docs.microsoft.com/en-us/dotnet/visual-basic/) 
 
 <div style="text-align:right">
 <small><a href="https://www.flaticon.com/free-icons/coffee" title="coffee icons">Coffee icons created by Freepik - Flaticon</a><small>

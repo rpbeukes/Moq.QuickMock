@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeRefactorings;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
@@ -38,22 +40,19 @@ namespace Moq.QuickMock.Test
             await test.RunAsync(CancellationToken.None);
         }
 
+        // This is custom code not part of the original templated created by Microsoft
         public static async Task VerifyRefactoringAsync(string source,
                                                         string fixedSource,
                                                         DiagnosticResult[] expected = null,
-                                                        string actionTitle = null,
-                                                        TestBehaviors testBehaviors = TestBehaviors.None)
+                                                        string actionTitle = null)
         {
             var test = new Test
             {
                 TestCode = source,
                 FixedCode = fixedSource,
-                TestBehaviors = testBehaviors,
-                //CompilerDiagnostics = CompilerDiagnostics.Errors
-            };
 
-            //test.TestCode = source;
-            //test.FixedCode = fixedSource;
+                CompilerDiagnostics = CompilerDiagnostics.None,
+            };
 
             if (expected != null && expected.Any())
             {
@@ -65,30 +64,28 @@ namespace Moq.QuickMock.Test
                 test.CodeActionEquivalenceKey = actionTitle;
             }
 
+            ChangeFileName(test.TestState);
+            ChangeFileName(test.FixedState);
+
+            await test.RunAsync();
+        }
+
+        private static void ChangeFileName(SolutionState state)
+        {
+            // HACK: the refactoring only works on files that follow naming convention:
+            //              `~/SomeFeatureTests.cs`
             // Example of the file name received here
             // "/0/TheTests0.cs";
             // remove the 0 to make the actual verification happen.
-            if (test.TestState.Sources.Any())
+            if (state.Sources.Any())
             {
-                for (int i = 0; i < test.TestState.Sources.Count; i++)
+                for (int i = 0; i < state.Sources.Count; i++)
                 {
-                    var srce = test.TestState.Sources[i];
+                    var srce = state.Sources[i];
                     srce.filename = srce.filename.Replace("Tests0", "Tests");
-                    test.TestState.Sources[i] = srce;
+                    state.Sources[i] = srce;
                 }
             }
-
-            if (test.FixedState.Sources.Any())
-            {
-                for (int i = 0; i < test.FixedState.Sources.Count; i++)
-                {
-                    var srce = test.FixedState.Sources[i];
-                    srce.filename = srce.filename.Replace("Tests0", "Tests");
-                    test.FixedState.Sources[i] = srce;
-                }
-            }
-
-            await test.RunAsync();
         }
     }
 }

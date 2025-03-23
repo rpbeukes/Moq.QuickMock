@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VerifyCS = Moq.QuickMock.Test.CSharpCodeRefactoringVerifier<
@@ -12,19 +11,17 @@ namespace Moq.QuickMock.Tests;
 [TestClass]
 public class MoqQuickMockCodeRefactoringProviderTests
 {
-    // This test still fails with syntax node differences which is under investigation
-    // all testing is done manually :(
     [TestMethod]
     public async Task TriggerCodeRefactoring()
     {
-        var test = @"
+        var codeTemplate = @"
 using System;
-
+using Moq;
 namespace DemoProject.Tests
 {
     public class DemoForUTests
     {
-        public DemoForUTests(string stringValue, int intValue)
+        public DemoForUTests(string stringValue, int intValue, int? nullIntValue, IUser user, Func<SomeCommand> cmdFactory)
         { }
     }
 
@@ -32,48 +29,37 @@ namespace DemoProject.Tests
     {
         public void DemoForUTTests_test()
         {
-            var systemUnderTest = new DemoForUTests();
+            var systemUnderTest = |{0}|;
         }
     }
-}
-";
 
-        var fixtest = @"
-using System;
-
-namespace DemoProject.Tests
-{
-    public class DemoForUTests
+    public interface IUser
     {
-        public DemoForUTests(string stringValue, int intValue)
-        { }
+        string Name { get; set; }
     }
-
-    public class DemoForUTTests
+   
+    public class SomeCommand
     {
-        public void DemoForUTTests_test()
+        public void DoSomething()
         {
-            var systemUnderTest = new DemoForUTests(It.IsAny<string>(), It.IsAny<int>());
+
         }
     }
 }
 ";
 
-        var expectedDiagnostic = DiagnosticResult
-                                    .CompilerError("CS7036")
-                                    .WithSpan(16, 39, 16, 52)
-                                    .WithArguments("stringValue", "DemoProject.Tests.DemoForUTests.DemoForUTests(string, int)")
-                                    ;
+        var startCode = codeTemplate.Replace("|{0}|", "new DemoForUTests()");
+        var refactoredCode = codeTemplate.Replace("|{0}|", "new DemoForUTests(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int?>(), Mock.Of<IUser>(), Mock.Of<Func<SomeCommand>>())");
 
-        var expectedRefactoring = DiagnosticResult
-                                    .CompilerError("Refactoring")
-                                    .WithSpan(16, 53, 16, 53)
-                                    ;
+        DiagnosticResult[] expectedDiagnostic =
+        [
+            // Special diagnostic needed for refactoring
+            DiagnosticResult.CompilerError("Refactoring").WithSpan(16, 53, 16, 53),
+        ];
 
-        await VerifyCS.VerifyRefactoringAsync(test,
-                                              fixtest,
-                                              [expectedDiagnostic, expectedRefactoring],
-                                              actionTitle: MoqQuickMockCodeRefactoringProvider.QuickMockCtorTitle,
-                                              testBehaviors: TestBehaviors.SkipGeneratedCodeCheck);
+        await VerifyCS.VerifyRefactoringAsync(startCode,
+                                              refactoredCode,
+                                              expectedDiagnostic,
+                                              actionTitle: MoqQuickMockCodeRefactoringProvider.QuickMockCtorTitle);
     }
 }
