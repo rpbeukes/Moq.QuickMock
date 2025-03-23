@@ -70,8 +70,6 @@ namespace Moq.QuickMock.Test
             if (expected != null && expected.Any())
             {
                 test.ExpectedDiagnostics.AddRange(expected);
-                //test.DisabledDiagnostics.Add("CS7036");
-                //test.DisabledDiagnostics.Add("CS0103");
             }
 
             if (actionTitle != null)
@@ -102,13 +100,7 @@ namespace Moq.QuickMock.Test
                 }
             }
 
-            
-            test.FixedState.ExpectedDiagnostics.Clear();
-
             await test.RunAsync();
-            var fff = 0;
         }
-
-
     }
 }
