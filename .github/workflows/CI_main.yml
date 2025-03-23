@@ -17,6 +17,12 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v4
 
+      - name: print env
+        run: env
+
+      - name: list directories
+        run: ls
+
       - name: setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
