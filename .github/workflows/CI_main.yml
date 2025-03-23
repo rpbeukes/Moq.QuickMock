@@ -60,11 +60,11 @@ jobs:
       - name: tests
         run: dotnet test ./Source/Moq.QuickMock.Vsix.Tests/Moq.QuickMock.Vsix.Tests.csproj --configuration Release --no-build --verbosity normal   
       
-      - name: build VSIX project
-        run: msbuild ./Source/Moq.QuickMock.Vsix/Moq.QuickMock.Vsix.csproj /p:Configuration=Release
+      - name: add msbuild to PATH
+        uses: microsoft/setup-msbuild@v2
 
-      # - name: add msbuild to PATH
-      #   uses: microsoft/setup-msbuild@v1.1
+      - name: build VSIX project
+        run: msbuild ./Source/Moq.QuickMock.Vsix/Moq.QuickMock.Vsix.csproj -t:rebuild /p:Configuration=Release
       
       # - name: setup nuget
       #   uses: nuget/setup-nuget@v2
