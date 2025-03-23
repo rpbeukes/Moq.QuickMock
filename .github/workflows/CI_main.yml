@@ -66,18 +66,6 @@ jobs:
       - name: build VSIX project
         run: msbuild ./Source/Moq.QuickMock.Vsix/Moq.QuickMock.Vsix.csproj -t:rebuild /p:Configuration=Release
       
-      # - name: setup nuget
-      #   uses: nuget/setup-nuget@v2
-      #   with:
-      #     nuget-version: '6.x'
-      
-      # - name: nuget restore
-      #   run: nuget restore Moq.QuickMock.sln
-      
-      # - name: build solution
-      #   #run:  msbuild .\Moq.QuickMock.sln -t:rebuild -verbosity:diag -property:Configuration=Release
-      #   run:  msbuild Moq.QuickMock.sln -t:rebuild -property:Configuration=Release
-
       - name: rename Moq.QuickMock.Vsix.vsix to Moq.QuickMock.W.X.Y.Z.vsix
         run:  ren ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock.Vsix.vsix Moq.QuickMock.${{ env.APP_VERSION }}.vsix
 
