@@ -43,7 +43,7 @@ jobs:
       - name: build project
         run: dotnet build --configuration Release --no-restore
       
-      - name: Run Unit Tests
+      - name: unit tests
         run: dotnet test --configuration Release --no-build --verbosity normal        
       # - name: add msbuild to PATH
       #   uses: microsoft/setup-msbuild@v1.1
