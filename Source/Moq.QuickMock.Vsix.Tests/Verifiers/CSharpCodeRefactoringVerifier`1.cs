@@ -43,30 +43,16 @@ namespace Moq.QuickMock.Test
         public static async Task VerifyRefactoringAsync(string source,
                                                         string fixedSource,
                                                         DiagnosticResult[] expected = null,
-                                                        string actionTitle = null,
-                                                        TestBehaviors testBehaviors = TestBehaviors.None)
+                                                        string actionTitle = null)
         {
             var test = new Test
             {
                 TestCode = source,
                 FixedCode = fixedSource,
-                TestBehaviors = testBehaviors,
+
                 CompilerDiagnostics = CompilerDiagnostics.None,
-                ReferenceAssemblies =
-                        ReferenceAssemblies.Default
-                                              .AddPackages([new PackageIdentity("Moq", "4.18.1")]),
-                                              //.AddAssemblies(["Moq"])
-                //CodeActionIndex = 0
-                //DiagnosticVerifier = (actualDiagnostic, expectedDiagnostic, verifier) =>
-                //{
-                //    var fff = 0;
-                //    verifier.True(true);
-                //},
             };
             
-            //test.TestCode = source;
-            //test.FixedCode = fixedSource;
-
             if (expected != null && expected.Any())
             {
                 test.ExpectedDiagnostics.AddRange(expected);
@@ -77,6 +63,8 @@ namespace Moq.QuickMock.Test
                 test.CodeActionEquivalenceKey = actionTitle;
             }
 
+            // HACK: the refactoring only works on files that follow naming convention:
+            //              `~/SomeFeatureTests.cs`
             // Example of the file name received here
             // "/0/TheTests0.cs";
             // remove the 0 to make the actual verification happen.

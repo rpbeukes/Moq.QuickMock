@@ -59,17 +59,6 @@ namespace DemoProject.Tests
 }
 ";
 
-        //var expectedDiagnostic = DiagnosticResult
-        //                            .CompilerError("CS7036")
-        //                            .WithSpan(16, 39, 16, 52)
-        //                            .WithArguments("stringValue", "DemoProject.Tests.DemoForUTests.DemoForUTests(string, int)")
-        //                            ;
-
-        //var expectedRefactoring = DiagnosticResult
-        //                            .CompilerError("Refactoring")
-        //                            .WithSpan(16, 53, 16, 53)
-        ;
-
         DiagnosticResult[] expectedDiagnostic =
         [
             // Special one needed for refactoring
@@ -86,11 +75,9 @@ namespace DemoProject.Tests
            //DiagnosticResult.CompilerError("CS0246").WithSpan(3, 7, 3, 10).WithArguments("Moq"),
         ];
 
-
         await VerifyCS.VerifyRefactoringAsync(test,
                                               fixtest,
                                               expectedDiagnostic,
-                                              actionTitle: MoqQuickMockCodeRefactoringProvider.QuickMockCtorTitle,
-                                              testBehaviors: TestBehaviors.SkipGeneratedCodeCheck);
+                                              actionTitle: MoqQuickMockCodeRefactoringProvider.QuickMockCtorTitle);
     }
 }
