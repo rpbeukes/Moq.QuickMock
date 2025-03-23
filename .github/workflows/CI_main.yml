@@ -22,7 +22,7 @@ jobs:
 
       - name: list directories
         run: ls |
-             cd Source |
+             cd Source 
              ls
 
       - name: setup .NET SDK
