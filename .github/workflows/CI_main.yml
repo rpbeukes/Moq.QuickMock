@@ -21,7 +21,8 @@ jobs:
         run: env
 
       - name: list directories
-        run: ls |
+        run: |
+             ls
              cd Source 
              ls
 
