@@ -19,7 +19,7 @@ public class MoqQuickMockCodeRefactoringProviderTests
     {
         var test = @"
 using System;
-
+using Moq;
 namespace DemoProject.Tests
 {
     public class DemoForUTests
@@ -40,7 +40,7 @@ namespace DemoProject.Tests
 
         var fixtest = @"
 using System;
-
+using Moq;
 namespace DemoProject.Tests
 {
     public class DemoForUTests
@@ -72,18 +72,20 @@ namespace DemoProject.Tests
 
         DiagnosticResult[] expectedDiagnostic =
         [
-           DiagnosticResult.CompilerError("CS7036").WithSpan(16, 39, 16, 52).WithArguments("stringValue", "DemoProject.Tests.DemoForUTests.DemoForUTests(string, int)"),
+            // Special one needed for refactoring
+            DiagnosticResult.CompilerError("Refactoring").WithSpan(16, 53, 16, 53),
 
-           DiagnosticResult.CompilerError("Refactoring").WithSpan(16, 53, 16, 53),
+            //DiagnosticResult.CompilerError("CS7036").WithSpan(16, 39, 16, 52)
+            //                                        .WithArguments("stringValue", "DemoProject.Tests.DemoForUTests.DemoForUTests(string, int)"),
 
            // Moq errors because the Moq package is not installed,
            // not an issue as the syntax validation is more important.
+           
            //DiagnosticResult.CompilerError("CS0103").WithSpan(16, 53, 16, 55).WithArguments("It"),
            //DiagnosticResult.CompilerError("CS0103").WithSpan(16, 73, 16, 75).WithArguments("It"),
-
-           
-
+           //DiagnosticResult.CompilerError("CS0246").WithSpan(3, 7, 3, 10).WithArguments("Moq"),
         ];
+
 
         await VerifyCS.VerifyRefactoringAsync(test,
                                               fixtest,

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeRefactorings;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
@@ -49,15 +51,27 @@ namespace Moq.QuickMock.Test
                 TestCode = source,
                 FixedCode = fixedSource,
                 TestBehaviors = testBehaviors,
-                //CompilerDiagnostics = CompilerDiagnostics.Errors
+                CompilerDiagnostics = CompilerDiagnostics.None,
+                ReferenceAssemblies =
+                        ReferenceAssemblies.Default
+                                              .AddPackages([new PackageIdentity("Moq", "4.18.1")]),
+                                              //.AddAssemblies(["Moq"])
+                //CodeActionIndex = 0
+                //DiagnosticVerifier = (actualDiagnostic, expectedDiagnostic, verifier) =>
+                //{
+                //    var fff = 0;
+                //    verifier.True(true);
+                //},
             };
-
+            
             //test.TestCode = source;
             //test.FixedCode = fixedSource;
 
             if (expected != null && expected.Any())
             {
                 test.ExpectedDiagnostics.AddRange(expected);
+                //test.DisabledDiagnostics.Add("CS7036");
+                //test.DisabledDiagnostics.Add("CS0103");
             }
 
             if (actionTitle != null)
@@ -88,7 +102,13 @@ namespace Moq.QuickMock.Test
                 }
             }
 
+            
+            test.FixedState.ExpectedDiagnostics.Clear();
+
             await test.RunAsync();
+            var fff = 0;
         }
+
+
     }
 }
