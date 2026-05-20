@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.Testing.Verifiers;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
 
 namespace Moq.QuickMock.Test
 {
@@ -22,7 +23,11 @@ namespace Moq.QuickMock.Test
                     compilationOptions = compilationOptions.WithSpecificDiagnosticOptions(
                         compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullableWarnings));
                     solution = solution.WithProjectCompilationOptions(projectId, compilationOptions);
-                    
+
+                    // Add Moq reference so analyzed code can resolve Moq.Mock<T> and related types
+                    var moqReference = MetadataReference.CreateFromFile(typeof(Moq.Mock<>).Assembly.Location);
+                    solution = solution.AddMetadataReference(projectId, moqReference);
+
                     return solution;
                 });
             }
