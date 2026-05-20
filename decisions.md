@@ -107,3 +107,91 @@ Build succeeded in 3.6s
 - Monitor CI/CD pipeline for any issues with the updated packages
 - Consider updating demo project to a modern .NET version (netcoreapp3.1 is EOL) in a separate task
 - Update locked dependencies in any lock files if in use
+
+---
+
+## Decision: DemoProject .NET 10 Upgrade
+
+**Date:** 2026-05-20  
+**Owner:** Neo  
+**Status:** Proposed
+
+### Summary
+Upgrade the `DemoProject` solution from `netcoreapp3.1` to `net10.0`, and preserve intentionally broken demo inputs by excluding them from compilation rather than altering the example code.
+
+### Context
+`DemoProject` is a sample/demo solution used to exercise and demonstrate Moq.QuickMock refactorings. Two files in `DemoProjectUnitTests` (`DemoClassOnlyTests.cs` and `DemoForUTests.cs`) intentionally contain constructor calls that do not compile, because they are example inputs for the extension's refactorings.
+
+After the TFM upgrade, a clean build exposed that these files prevent the test project from compiling. Changing the sample code would defeat the purpose of the demos.
+
+### Decision
+- Change both demo projects to `net10.0`
+- Keep the broken demo inputs unchanged
+- Mark the demo input `.cs` files as non-compiling project items (`<Compile Remove=... />` + `<None Include=... />`) so the solution remains buildable
+
+### Consequences
+- `dotnet build DemoProject\DemoProject.sln` succeeds on .NET 10
+- The demo files remain available in the project for manual refactoring demos
+- `dotnet test` reports zero discovered tests in `DemoProjectUnitTests`, which is acceptable because the project serves as demo input, not an automated test suite
+
+---
+
+## Deprecated Package Migration — Complete
+
+**Date:** 2026-05-20  
+**Owner:** Tank (DevOps)  
+**Status:** ✅ Complete
+
+### Summary
+
+Successfully executed the deprecated package migration plan for `Moq.QuickMock.Vsix.Tests`. Migrated from MSTest-flavored CodeAnalysis testing packages to framework-agnostic versions.
+
+### Changes
+
+#### Packages Removed (6 total)
+- Microsoft.CodeAnalysis.VisualBasic.Analyzer.Testing.MSTest 1.1.2
+- Microsoft.CodeAnalysis.VisualBasic.CodeFix.Testing.MSTest 1.1.2  
+- Microsoft.CodeAnalysis.VisualBasic.CodeRefactoring.Testing.MSTest 1.1.2
+- Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.MSTest 1.1.2
+- Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.MSTest 1.1.2
+- Microsoft.CodeAnalysis.CSharp.CodeRefactoring.Testing.MSTest 1.1.2
+
+#### Packages Added (3 total)
+- Microsoft.CodeAnalysis.CSharp.Analyzer.Testing 1.1.3 (framework-agnostic)
+- Microsoft.CodeAnalysis.CSharp.CodeFix.Testing 1.1.3 (framework-agnostic)
+- Microsoft.CodeAnalysis.CSharp.CodeRefactoring.Testing 1.1.3 (framework-agnostic)
+
+#### Files Deleted (6 total)
+All VisualBasic verifier files (no longer needed for C#-only project):
+- Source/Moq.QuickMock.Vsix.Tests/Verifiers/VisualBasicAnalyzerVerifier`1.cs
+- Source/Moq.QuickMock.Vsix.Tests/Verifiers/VisualBasicAnalyzerVerifier`1+Test.cs
+- Source/Moq.QuickMock.Vsix.Tests/Verifiers/VisualBasicCodeFixVerifier`2.cs
+- Source/Moq.QuickMock.Vsix.Tests/Verifiers/VisualBasicCodeFixVerifier`2+Test.cs
+- Source/Moq.QuickMock.Vsix.Tests/Verifiers/VisualBasicCodeRefactoringVerifier`1.cs
+- Source/Moq.QuickMock.Vsix.Tests/Verifiers/VisualBasicCodeRefactoringVerifier`1+Test.cs
+
+#### Using Statement Updates (6 files updated)
+Removed `using Microsoft.CodeAnalysis.Testing.Verifiers;` from:
+- CSharpAnalyzerVerifier`1.cs
+- CSharpAnalyzerVerifier`1+Test.cs
+- CSharpCodeFixVerifier`2.cs
+- CSharpCodeFixVerifier`2+Test.cs
+- CSharpCodeRefactoringVerifier`1.cs
+- CSharpCodeRefactoringVerifier`1+Test.cs
+
+**Reason:** The Verifiers namespace doesn't exist in framework-agnostic packages. DefaultVerifier is accessible via `Microsoft.CodeAnalysis.Testing` alone.
+
+### Build Result
+
+✅ **Success** — Project builds without warnings or errors
+```
+dotnet build Source\Moq.QuickMock.Vsix.Tests\Moq.QuickMock.Vsix.Tests.csproj --configuration Debug
+Build succeeded in 2.5s
+```
+
+### Notes
+
+- Framework-agnostic packages are the recommended approach going forward
+- MSTest-flavored packages (*.MSTest) are deprecated and should not be used in new projects
+- VisualBasic support was removed during migration (project is C#-only)
+- All test verifiers remain functional with no logic changes needed
