@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
     <SuppressTfmSupportBuildErrors>true</SuppressTfmSupportBuildErrors>
@@ -20,6 +20,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DemoProject\DemoProject.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="DemoClassOnlyTests.cs;DemoForUTests.cs" />
+    <None Include="DemoClassOnlyTests.cs;DemoForUTests.cs" />
   </ItemGroup>
 
 </Project>

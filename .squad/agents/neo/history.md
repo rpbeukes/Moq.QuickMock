@@ -25,3 +25,8 @@ Audited deprecated NuGet packages across the solution. Found 6 deprecated packag
 **Migration approach:** The existing verifier code already uses framework-agnostic patterns (`DefaultVerifier`, `CSharpCodeRefactoringTest<T, TVerifier>`). Migration is a drop-in package replacement. VB packages and unused verifier files can be removed entirely — no VB tests exist.
 
 Full plan documented in `.squad/decisions/inbox/neo-deprecated-packages-plan.md`.
+
+### 2026-05-20: DemoProject .NET 10 upgrade
+Upgraded the demo solution projects from `netcoreapp3.1` to `net10.0` after confirming the .NET 10 SDK (`10.0.203`) was installed.
+
+`DemoProjectUnitTests` contains intentionally non-compiling example source files used for refactoring demos (`DemoClassOnlyTests.cs`, `DemoForUTests.cs`). To keep the sample files intact while making the solution buildable, they are now excluded from compilation and included as non-build items in the project.
