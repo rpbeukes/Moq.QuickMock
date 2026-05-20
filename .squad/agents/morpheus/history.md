@@ -68,6 +68,27 @@ _No learnings recorded yet. Append new entries below as work progresses._
 
 **Completion:** Test `TriggerMockOfToNewMockCodeRefactoring` added to new file `MockOfToNewMockCodeRefactoringProviderTests.cs`. 3/3 tests passing. Committed 6fd46f0. Decision recorded in `.squad/decisions/inbox/morpheus-mockof-test-pattern.md`.
 
+### 2026-05-20 — Deprecated package migration gate check
+
+**Run command:** `dotnet test Source\Moq.QuickMock.Vsix.Tests\Moq.QuickMock.Vsix.Tests.csproj --configuration Debug --verbosity normal`
+
+**Results:**
+- Total: 5
+- Passed: 5
+- Failed: 0
+- Skipped: 0
+- Duration: 4.1s
+- Build: succeeded (6.0s)
+
+**Verdict:** ✅ All tests pass. Deprecated package migration committed (06fc163). No deprecated packages remain.
+
+**Changes committed:**
+- Removed 6 VisualBasic verifier files
+- Replaced MSTest-flavored CSharp analyzer/codefix/refactoring testing packages with framework-agnostic versions (1.1.3)
+- Squad state committed (14e224c)
+
+---
+
 ### Scribe Session (2026-05-20T12:08:52Z)
 
 - Tank's NuGet update decision processed and merged into `decisions.md`
