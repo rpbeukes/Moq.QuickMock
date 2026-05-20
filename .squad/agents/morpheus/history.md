@@ -11,6 +11,29 @@
 
 _No learnings recorded yet. Append new entries below as work progresses._
 
+### 2026-05-20 — NuGet package update gate check
+
+**Run command:** `dotnet test Source\Moq.QuickMock.Vsix.Tests\Moq.QuickMock.Vsix.Tests.csproj --configuration Debug --verbosity normal`
+
+**Results:**
+- Total: 5
+- Passed: 5
+- Failed: 0
+- Skipped: 0
+- Duration: 3.4s
+- Build: succeeded (5.0s)
+
+**Verdict:** ✅ All tests pass. NuGet updates committed (03892c5). No regressions.
+
+**NuGet versions now in use:**
+- `Microsoft.CodeAnalysis.*` → 5.3.0
+- `Microsoft.VSSDK.BuildTools` → 18.5.40034
+- `Moq` → 4.20.72
+- `MSTest.*` → 4.2.3
+- `Microsoft.NET.Test.Sdk` → 18.5.1
+- `Microsoft.Extensions.Logging.Abstractions` (DemoProject) → 10.0.8
+- `coverlet.collector` (DemoProject) → 10.0.1
+
 ### 2026-05-20 — `.slnx` migration regression check
 
 **Run command:** `dotnet test Source\Moq.QuickMock.Vsix.Tests\Moq.QuickMock.Vsix.Tests.csproj --configuration Debug --verbosity normal`
