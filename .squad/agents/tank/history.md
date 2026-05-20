@@ -61,3 +61,11 @@
 - CodeAnalysis.Testing packages (1.1.2) remain unchanged — compatible with CodeAnalysis 5.3.0 and only used in test infrastructure
 - No preview versions currently in use (removed preview from Microsoft.NET.Test.Sdk in Moq.QuickMock.Vsix.Tests)
 - DemoProject & DemoProjectUnitTests: Added `<SuppressTfmSupportBuildErrors>true</SuppressTfmSupportBuildErrors>` to DemoProjectUnitTests.csproj because netcoreapp3.1 is EOL and newer packages don't officially support it (but function correctly). These projects have pre-existing test code issues unrelated to the NuGet updates.
+
+### Scribe Session (2026-05-20T12:08:52Z)
+
+- NuGet update decision merged into `decisions.md`
+- Morpheus confirmed all tests pass post-update (5/5 tests, 0 failures)
+- Session logged: `.squad/log/2026-05-20T12-08-52Z-nuget-updates.md`
+- Orchestration logged: `.squad/orchestration-log/2026-05-20T12-08-52Z-tank.md`
+- Commit: staged and committed all `.squad/` files to git

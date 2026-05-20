@@ -67,3 +67,11 @@ _No learnings recorded yet. Append new entries below as work progresses._
 - `startCode` contains the fully-expanded expression (no template placeholder); `refactoredCode` is built with `startCode.Replace(...)` replacing just the SUT line.
 
 **Completion:** Test `TriggerMockOfToNewMockCodeRefactoring` added to new file `MockOfToNewMockCodeRefactoringProviderTests.cs`. 3/3 tests passing. Committed 6fd46f0. Decision recorded in `.squad/decisions/inbox/morpheus-mockof-test-pattern.md`.
+
+### Scribe Session (2026-05-20T12:08:52Z)
+
+- Tank's NuGet update decision processed and merged into `decisions.md`
+- Test verification result (5/5 tests pass) recorded in session logs
+- Session logged: `.squad/log/2026-05-20T12-08-52Z-nuget-updates.md`
+- Orchestration logged: `.squad/orchestration-log/2026-05-20T12-08-52Z-morpheus.md`
+- Commit: staged and committed all `.squad/` files to git
