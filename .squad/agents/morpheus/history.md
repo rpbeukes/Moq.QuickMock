@@ -33,3 +33,5 @@ _No learnings recorded yet. Append new entries below as work progresses._
 - `MoqQuickMockCodeRefactoringProvider.MockCtorTitle` needs an explicit `refactoredCode` string replacement for the full `var systemUnderTest = |{0}|;` line because the action inserts `var ...Mock` declarations *before* the SUT line.
 - Reuse the same refactoring cursor diagnostic span as the existing ctor test: `DiagnosticResult.CompilerError("Refactoring").WithSpan(16, 53, 16, 53)`.
 - Whitespace matters: the expected replacement must preserve the 12-space indentation in the method body and use exact `\r\n` line breaks between the inserted mock declarations and the SUT line.
+
+**Completion:** Test `TriggerMockCtorCodeRefactoring` added to `MoqQuickMockCodeRefactoringProviderTests.cs`. 2/2 tests passing. Committed 8233b61. Decision recorded in `.squad/decisions.md`.

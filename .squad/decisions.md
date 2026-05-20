@@ -42,6 +42,26 @@
 - Developers can opt-in to using .slnx in VS 2026
 - Monitor for any compatibility issues in coming releases
 
+### Decision: MockCtor Test Pattern
+**Date:** 2026-05-20  
+**Owner:** Morpheus  
+**Status:** ✅ Established
+
+**Summary:** `MoqQuickMockCodeRefactoringProvider.MockCtorTitle` generates `var ...Mock` declarations before the system-under-test line, distinct from `QuickMockCtorTitle`.
+
+**Testing Pattern:**
+- Keep `startCode` identical to existing ctor refactoring test (diagnostic span: `WithSpan(16, 53, 16, 53)`)
+- Build `refactoredCode` by replacing the full `            var systemUnderTest = |{0}|;` line (not just the placeholder)
+- Replacement must include exact method-body indentation and explicit `\r\n` breaks:
+  - `var userMock = new Mock<IUser>();`
+  - `var cmdFactoryMock = new Mock<Func<SomeCommand>>();`
+  - `var systemUnderTest = new DemoForUTests(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int?>(), userMock.Object, cmdFactoryMock.Object);`
+
+**Implementation Notes:**
+- Roslyn refactoring verification is whitespace-sensitive
+- Mismatched indentation or line endings will fail expected output comparison
+- Test added to `MoqQuickMockCodeRefactoringProviderTests.cs`, verifies Mock ctor action generates var {name}Mock declarations
+
 ## Governance
 
 - All meaningful changes require team consensus
