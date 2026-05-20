@@ -1,4 +1,29 @@
-# NuGet Package Update Summary (2026-05-20)
+# Decisions Log
+
+## Deprecated Package Migration Plan (2026-05-20)
+
+**Owner:** Neo (Lead / Architect)  
+**Status:** 📋 Proposed
+
+### Summary
+**6 deprecated packages** found in Moq.QuickMock.Vsix.Tests:
+- **3 VB packages** → Remove (unused scaffolding)
+- **3 C# packages** → Replace with framework-agnostic versions (1.1.3)
+
+**Recommended execution order:**
+1. Remove VB packages (zero risk cleanup)
+2. Replace C# packages: `*.MSTest` → framework-agnostic + MSTest verifier
+3. Run tests to validate
+
+**Estimated effort:** ~30 minutes (5 min removal, 10 min replacement, 15 min validation)
+
+**Risk:** None — test-only dependencies, VSIX/core library unaffected
+
+**References:** [Roslyn Testing Docs](https://github.com/dotnet/roslyn-sdk/tree/main/src/Testing)
+
+---
+
+## NuGet Package Update Summary (2026-05-20)
 
 **Status:** ✅ Complete  
 **All projects successfully updated to latest stable versions**  

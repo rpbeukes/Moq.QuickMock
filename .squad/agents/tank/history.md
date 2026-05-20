@@ -69,3 +69,49 @@
 - Session logged: `.squad/log/2026-05-20T12-08-52Z-nuget-updates.md`
 - Orchestration logged: `.squad/orchestration-log/2026-05-20T12-08-52Z-tank.md`
 - Commit: staged and committed all `.squad/` files to git
+
+### Deprecated Package Migration (2026-05-20)
+
+**Objective:** Migrate Moq.QuickMock.Vsix.Tests from MSTest-flavored CodeAnalysis testing packages to framework-agnostic versions.
+
+**Packages Removed:**
+- ❌ Microsoft.CodeAnalysis.VisualBasic.Analyzer.Testing.MSTest 1.1.2
+- ❌ Microsoft.CodeAnalysis.VisualBasic.CodeFix.Testing.MSTest 1.1.2
+- ❌ Microsoft.CodeAnalysis.VisualBasic.CodeRefactoring.Testing.MSTest 1.1.2
+- ❌ Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.MSTest 1.1.2
+- ❌ Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.MSTest 1.1.2
+- ❌ Microsoft.CodeAnalysis.CSharp.CodeRefactoring.Testing.MSTest 1.1.2
+
+**Packages Added:**
+- ✅ Microsoft.CodeAnalysis.CSharp.Analyzer.Testing 1.1.3 (framework-agnostic)
+- ✅ Microsoft.CodeAnalysis.CSharp.CodeFix.Testing 1.1.3 (framework-agnostic)
+- ✅ Microsoft.CodeAnalysis.CSharp.CodeRefactoring.Testing 1.1.3 (framework-agnostic)
+
+**Verifier Files Deleted:**
+- Removed all VisualBasic verifier files (6 files, unused for VB-specific testing):
+  - VisualBasicAnalyzerVerifier`1.cs
+  - VisualBasicAnalyzerVerifier`1+Test.cs
+  - VisualBasicCodeFixVerifier`2.cs
+  - VisualBasicCodeFixVerifier`2+Test.cs
+  - VisualBasicCodeRefactoringVerifier`1.cs
+  - VisualBasicCodeRefactoringVerifier`1+Test.cs
+
+**Using Statement Updates:**
+- Removed `using Microsoft.CodeAnalysis.Testing.Verifiers;` from all CSharp verifier files
+- Reason: Framework-agnostic packages do not export this namespace; DefaultVerifier is available via `Microsoft.CodeAnalysis.Testing`
+- Updated files:
+  - CSharpAnalyzerVerifier`1.cs
+  - CSharpAnalyzerVerifier`1+Test.cs
+  - CSharpCodeFixVerifier`2.cs
+  - CSharpCodeFixVerifier`2+Test.cs
+  - CSharpCodeRefactoringVerifier`1.cs
+  - CSharpCodeRefactoringVerifier`1+Test.cs
+
+**Build Result:** ✅ `dotnet build Moq.QuickMock.Vsix.Tests.csproj --configuration Debug` succeeds (0 warnings, 0 errors)
+
+**Key Insights:**
+- MSTest-flavored packages (*.MSTest) are deprecated in favor of framework-agnostic versions
+- The framework-agnostic packages (1.1.3) are only available for CSharp and CodeFix/CodeRefactoring, not for VisualBasic
+- The Verifiers namespace changed when moving to framework-agnostic packages; it's now internal to the Testing namespace
+- DefaultVerifier is still accessible from `Microsoft.CodeAnalysis.Testing` without the Verifiers using statement
+
