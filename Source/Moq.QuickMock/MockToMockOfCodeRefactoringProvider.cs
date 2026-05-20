@@ -14,8 +14,10 @@ using System.Threading.Tasks;
 namespace Moq.QuickMock
 {
     [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = nameof(MockToMockOfCodeRefactoringProvider)), Shared]
-    internal class MockToMockOfCodeRefactoringProvider : CodeRefactoringProvider
+    public class MockToMockOfCodeRefactoringProvider : CodeRefactoringProvider
     {
+        public static string MockObjectTitle = "mock.Object to Mock.Of<T> (Moq)";
+
         public sealed override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
@@ -44,7 +46,7 @@ namespace Moq.QuickMock
 
             if (isActionAvailable)
             {
-                var action = CodeAction.Create("mock.Object to Mock.Of<T> (Moq)", async (c) =>
+                var action = CodeAction.Create(MockObjectTitle, async (c) =>
                 {
                     var localVarsInMethod = identifierName.Ancestors()
                                                           .OfType<MethodDeclarationSyntax>()
@@ -92,7 +94,7 @@ namespace Moq.QuickMock
 
                     var changedDoc = editor.GetChangedDocument();
                     return changedDoc;
-                });
+                }, equivalenceKey: MockObjectTitle);
 
                 // Register this code action.
                 context.RegisterRefactoring(action);

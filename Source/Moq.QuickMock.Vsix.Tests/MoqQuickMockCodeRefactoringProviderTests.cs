@@ -62,4 +62,59 @@ namespace DemoProject.Tests
                                               expectedDiagnostic,
                                               actionTitle: MoqQuickMockCodeRefactoringProvider.QuickMockCtorTitle);
     }
+
+    [TestMethod]
+    public async Task TriggerMockCtorCodeRefactoring()
+    {
+        var codeTemplate = @"
+using System;
+using Moq;
+namespace DemoProject.Tests
+{
+    public class DemoForUTests
+    {
+        public DemoForUTests(string stringValue, int intValue, int? nullIntValue, IUser user, Func<SomeCommand> cmdFactory)
+        { }
+    }
+
+    public class DemoForUTTests
+    {
+        public void DemoForUTTests_test()
+        {
+            var systemUnderTest = |{0}|;
+        }
+    }
+
+    public interface IUser
+    {
+        string Name { get; set; }
+    }
+   
+    public class SomeCommand
+    {
+        public void DoSomething()
+        {
+
+        }
+    }
+}
+";
+
+        var startCode = codeTemplate.Replace("|{0}|", "new DemoForUTests()");
+        var refactoredCode = codeTemplate.Replace("            var systemUnderTest = |{0}|;",
+                                                  "            var userMock = new Mock<IUser>();\r\n" +
+                                                  "            var cmdFactoryMock = new Mock<Func<SomeCommand>>();\r\n" +
+                                                  "            var systemUnderTest = new DemoForUTests(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int?>(), userMock.Object, cmdFactoryMock.Object);");
+
+        DiagnosticResult[] expectedDiagnostic =
+        [
+            // Special diagnostic needed for refactoring
+            DiagnosticResult.CompilerError("Refactoring").WithSpan(16, 53, 16, 53),
+        ];
+
+        await VerifyCS.VerifyRefactoringAsync(startCode,
+                                              refactoredCode,
+                                              expectedDiagnostic,
+                                              actionTitle: MoqQuickMockCodeRefactoringProvider.MockCtorTitle);
+    }
 }
