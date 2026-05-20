@@ -56,7 +56,7 @@ namespace Moq.QuickMock
                                                                             c => MoqActions.QuickMockCtor(context.Document, ctorMethodSymbols, argumentList, c),
                                                                             equivalenceKey: title);
 
-                                title = "Mock ctor (Moq)";
+                                title = MockCtorTitle;
                                 var mockCtorAction = CodeAction.Create(title,
                                                                        c => MoqActions.MockCtor(context.Document, ctorMethodSymbols, argumentList, c),
                                                                        equivalenceKey: title);
