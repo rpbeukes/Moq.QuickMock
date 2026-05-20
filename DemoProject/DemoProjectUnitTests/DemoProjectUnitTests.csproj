@@ -22,9 +22,4 @@
     <ProjectReference Include="..\DemoProject\DemoProject.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="DemoClassOnlyTests.cs;DemoForUTests.cs" />
-    <None Include="DemoClassOnlyTests.cs;DemoForUTests.cs" />
-  </ItemGroup>
-
 </Project>
