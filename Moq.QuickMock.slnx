@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Source/Moq.QuickMock.Vsix.Tests/Moq.QuickMock.Vsix.Tests.csproj" />
+  <Project Path="Source/Moq.QuickMock.Vsix/Moq.QuickMock.Vsix.csproj" />
+  <Project Path="Source/Moq.QuickMock/Moq.QuickMock.csproj" />
+</Solution>
