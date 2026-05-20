@@ -115,3 +115,14 @@
 - The Verifiers namespace changed when moving to framework-agnostic packages; it's now internal to the Testing namespace
 - DefaultVerifier is still accessible from `Microsoft.CodeAnalysis.Testing` without the Verifiers using statement
 
+### DemoProject .slnx Migration (2026-05-20)
+
+- Verified SDK/tooling on .NET `10.0.203`
+- `dotnet solution DemoProject.sln migrate` is the working migration command for the demo solution
+- Generated `DemoProject.slnx` contains two relative project entries:
+  - `DemoProject/DemoProject.csproj`
+  - `DemoProjectUnitTests/DemoProjectUnitTests.csproj`
+- `dotnet build DemoProject\DemoProject.slnx --configuration Debug` succeeds
+- Removed the legacy `DemoProject.sln` after validating the new solution file
+- Root `Moq.QuickMock.slnx` does not reference the demo solution file, so no root solution update was required
+

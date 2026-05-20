@@ -130,7 +130,8 @@ After the TFM upgrade, a clean build exposed that these files prevent the test p
 - Mark the demo input `.cs` files as non-compiling project items (`<Compile Remove=... />` + `<None Include=... />`) so the solution remains buildable
 
 ### Consequences
-- `dotnet build DemoProject\DemoProject.sln` succeeds on .NET 10
+- `dotnet build DemoProject\DemoProject.slnx` succeeds on .NET 10
+- DemoProject now uses the XML-based `.slnx` format instead of the legacy `.sln` file
 - The demo files remain available in the project for manual refactoring demos
 - `dotnet test` reports zero discovered tests in `DemoProjectUnitTests`, which is acceptable because the project serves as demo input, not an automated test suite
 
