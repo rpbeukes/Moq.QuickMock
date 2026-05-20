@@ -35,3 +35,12 @@ _No learnings recorded yet. Append new entries below as work progresses._
 - Whitespace matters: the expected replacement must preserve the 12-space indentation in the method body and use exact `\r\n` line breaks between the inserted mock declarations and the SUT line.
 
 **Completion:** Test `TriggerMockCtorCodeRefactoring` added to `MoqQuickMockCodeRefactoringProviderTests.cs`. 2/2 tests passing. Committed 8233b61. Decision recorded in `.squad/decisions.md`.
+
+### 2026-05-20 — `MockOfToNewMock` refactoring test pattern
+
+- `MockOfToNewMockCodeRefactoringProvider` must be `public` (not `internal`) for the test project to access it via the generic `CSharpCodeRefactoringVerifier<TCodeRefactoring>`.
+- `CodeAction.Create` must include `equivalenceKey: MockOfTitle` — without it, the Roslyn test framework cannot match the action by title and the refactoring never fires (test appears to pass compile but the code is left unchanged).
+- The trigger span `WithSpan(16, 53, 16, 53)` places the cursor at the `Mock` identifier inside `Mock.Of<IUser>()` on line 16 — same column as the existing ctor tests because `Mock.Of<IUser>()` begins at column 53 within `new DemoForUTests(Mock.Of<IUser>())`.
+- `startCode` contains the fully-expanded expression (no template placeholder); `refactoredCode` is built with `startCode.Replace(...)` replacing just the SUT line.
+
+**Completion:** Test `TriggerMockOfToNewMockCodeRefactoring` added to new file `MockOfToNewMockCodeRefactoringProviderTests.cs`. 3/3 tests passing. Committed 6fd46f0. Decision recorded in `.squad/decisions/inbox/morpheus-mockof-test-pattern.md`.
