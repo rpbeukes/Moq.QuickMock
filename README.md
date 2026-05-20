@@ -3,12 +3,12 @@
 <img  src="./Doco/Assets/coffee.png" alt="drawing" width="25"/><a href="https://buy.stripe.com/eVa7w16MSehn9QA3cc" target="_blank"> Pay it forward </a> <img  src="./Doco/Assets/coffee.png" alt="drawing" width="25"/>
 
 # Moq.QuickMock
-Small Visual Studio 2022 extension, helping to write [Moq](https://github.com/moq/moq) tests for C#.
+Small Visual Studio 2022/2026 extension, helping to write [Moq](https://github.com/moq/moq) tests for C#.
 
 ---
 
 ## Visual Studio Marketplace
-[Moq.QuickMock 2022](https://marketplace.visualstudio.com/items?itemName=Rpbeukes.MoqQuickMock2022)
+[Moq.QuickMock](https://marketplace.visualstudio.com/items?itemName=Rpbeukes.MoqQuickMock2022)
 
 ## Download Moq.QuickMock.vsix and install
 Download `Moq.QuickMock.vsix` from latest successful [build](https://github.com/rpbeukes/Moq.QuickMock/actions/workflows/CI_main.yml?query=branch%3Amain+is%3Asuccess).
