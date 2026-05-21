@@ -1,0 +1,175 @@
+name: CD Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: marketplace-release-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout tagged source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          fetch-depth: 1
+
+      - name: Parse release tag
+        id: version
+        shell: pwsh
+        run: |
+          $tag = '${{ github.event.release.tag_name }}'
+          if ($tag -notmatch '^[vV](\d+\.\d+\.\d+\.\d+)$') {
+            throw "Release tag '$tag' must look like v1.0.8.95 or V1.0.8.95"
+          }
+
+          $version = $Matches[1]
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "artifact_name=Moq.QuickMock.$version.vsix" >> $env:GITHUB_OUTPUT
+          "sha_name=Moq.QuickMock.$version.vsix.sha256" >> $env:GITHUB_OUTPUT
+
+      - name: Find CI artifact
+        id: artifact
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $artifactName = '${{ steps.version.outputs.artifact_name }}'
+          $uri = "repos/${{ github.repository }}/actions/artifacts?name=$artifactName&per_page=100"
+          $response = gh api -H "X-GitHub-Api-Version: 2022-11-28" $uri | ConvertFrom-Json
+
+          $matches = @(
+            $response.artifacts |
+            Where-Object {
+              $_.name -eq $artifactName -and
+              -not $_.expired -and
+              $_.workflow_run.head_branch -eq 'main'
+            } |
+            Sort-Object updated_at -Descending
+          )
+
+          if ($matches.Count -eq 0) {
+            throw "No non-expired CI artifact named '$artifactName' was found on main."
+          }
+
+          $artifact = $matches[0]
+          "artifact_id=$($artifact.id)" >> $env:GITHUB_OUTPUT
+          "artifact_digest=$($artifact.digest)" >> $env:GITHUB_OUTPUT
+          "artifact_run_id=$($artifact.workflow_run.id)" >> $env:GITHUB_OUTPUT
+          "artifact_head_sha=$($artifact.workflow_run.head_sha)" >> $env:GITHUB_OUTPUT
+
+      - name: Download artifact ZIP
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          $headers = @{
+            Authorization = "Bearer $env:GITHUB_TOKEN"
+            Accept = "application/vnd.github+json"
+            'X-GitHub-Api-Version' = '2022-11-28'
+            'User-Agent' = 'github-actions'
+          }
+
+          $downloadUrl = "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${{ steps.artifact.outputs.artifact_id }}/zip"
+          Invoke-WebRequest -Headers $headers -Uri $downloadUrl -OutFile artifact.zip
+          Expand-Archive -LiteralPath artifact.zip -DestinationPath artifact -Force
+
+      - name: Verify VSIX checksum
+        id: verify
+        shell: pwsh
+        run: |
+          $vsixPath = Resolve-Path "artifact\${{ steps.version.outputs.artifact_name }}"
+          $shaPath = Resolve-Path "artifact\${{ steps.version.outputs.sha_name }}"
+
+          $expected = (Get-Content $shaPath -Raw).Trim().Split(' ')[0].ToLowerInvariant()
+          $actual = (Get-FileHash $vsixPath -Algorithm SHA256).Hash.ToLowerInvariant()
+
+          if ($actual -ne $expected) {
+            throw "VSIX SHA256 mismatch. Expected $expected but got $actual"
+          }
+
+          "vsix_path=$vsixPath" >> $env:GITHUB_OUTPUT
+          "sha_path=$shaPath" >> $env:GITHUB_OUTPUT
+          "sha256=$actual" >> $env:GITHUB_OUTPUT
+
+      - name: Attach assets to GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "${{ github.event.release.tag_name }}" `
+            "${{ steps.verify.outputs.vsix_path }}" `
+            "${{ steps.verify.outputs.sha_path }}" `
+            --clobber
+
+      - name: Locate VsixPublisher.exe
+        id: publisher
+        shell: pwsh
+        run: |
+          $vsInstallPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" `
+            -latest -products * -requires Microsoft.VisualStudio.Component.VSSDK -property installationPath
+
+          if (-not $vsInstallPath) {
+            throw 'Visual Studio with VSSDK components was not found on the runner.'
+          }
+
+          $vsixPublisher = Join-Path $vsInstallPath 'VSSDK\VisualStudioIntegration\Tools\Bin\VsixPublisher.exe'
+          if (-not (Test-Path $vsixPublisher)) {
+            throw "VsixPublisher.exe not found at $vsixPublisher"
+          }
+
+          "path=$vsixPublisher" >> $env:GITHUB_OUTPUT
+
+      - name: Create marketplace publish manifest
+        shell: pwsh
+        run: |
+          @"
+          {
+            "`$schema": "http://json.schemastore.org/vsix-publish",
+            "categories": ["coding", "testing"],
+            "identity": {
+              "internalName": "MoqQuickMock2022"
+            },
+            "overview": "README.md",
+            "priceCategory": "free",
+            "publisher": "Rpbeukes",
+            "private": false,
+            "qna": true,
+            "repo": "${{ github.server_url }}/${{ github.repository }}"
+          }
+          "@ | Set-Content publish-manifest.json -Encoding utf8
+
+      - name: Publish to Visual Studio Marketplace
+        shell: pwsh
+        env:
+          VS_MARKETPLACE_PAT: ${{ secrets.VS_MARKETPLACE_PAT }}
+        run: |
+          & "${{ steps.publisher.outputs.path }}" publish `
+            -payload "${{ steps.verify.outputs.vsix_path }}" `
+            -publishManifest "publish-manifest.json" `
+            -personalAccessToken "$env:VS_MARKETPLACE_PAT"
+
+      - name: Publish summary
+        shell: pwsh
+        run: |
+          @"
+          ## Marketplace deployment
+
+          - Release tag: `${{ github.event.release.tag_name }}`
+          - Version: `${{ steps.version.outputs.version }}`
+          - Artifact: `${{ steps.version.outputs.artifact_name }}`
+          - Artifact id: `${{ steps.artifact.outputs.artifact_id }}`
+          - Artifact ZIP digest: `${{ steps.artifact.outputs.artifact_digest }}`
+          - VSIX SHA256: `${{ steps.verify.outputs.sha256 }}`
+          - CI workflow run id: `${{ steps.artifact.outputs.artifact_run_id }}`
+          - CI head SHA: `${{ steps.artifact.outputs.artifact_head_sha }}`
+          "@ | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append
