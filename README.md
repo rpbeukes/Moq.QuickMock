@@ -201,7 +201,6 @@ public void DemoClassOnlyTest_MockObject_to_MockOfT_local_variable()
 ## ToDos
 
 ### Tasks (Priority ordered)
-- Pipeline to auto deploy to [Visual Studio Marketplace](https://marketplace.visualstudio.com/)
 - Get it working for [VB.Net](https://docs.microsoft.com/en-us/dotnet/visual-basic/) 
 
 <div style="text-align:right">
