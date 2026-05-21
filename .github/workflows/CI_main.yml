@@ -66,11 +66,28 @@ jobs:
       - name: build VSIX project
         run: msbuild ./Source/Moq.QuickMock.Vsix/Moq.QuickMock.Vsix.csproj -t:rebuild /p:Configuration=Release
       
-      - name: rename Moq.QuickMock.Vsix.vsix to Moq.QuickMock.W.X.Y.Z.vsix
-        run:  ren ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock.Vsix.vsix Moq.QuickMock.${{ env.APP_VERSION }}.vsix
+      - name: prepare release bundle
+        shell: pwsh
+        run: |
+          $releaseDir = "${{ github.workspace }}\artifacts\${{ env.APP_VERSION }}"
+          New-Item -ItemType Directory -Path $releaseDir -Force | Out-Null
+
+          $src = "${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock.Vsix.vsix"
+          $vsixPath = Join-Path $releaseDir "Moq.QuickMock.${{ env.APP_VERSION }}.vsix"
+          Move-Item $src $vsixPath
+
+          $sha256 = (Get-FileHash $vsixPath -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$sha256 *Moq.QuickMock.${{ env.APP_VERSION }}.vsix" | Set-Content "$vsixPath.sha256" -Encoding ascii
+
+          "VSIX_SHA256=$sha256" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: print sha256
+        run: |
+          Write-Host "VSIX SHA256: ${{ env.VSIX_SHA256 }}"
 
       - name: create artifact
         uses: actions/upload-artifact@v4
         with:
           name: Moq.QuickMock.${{ env.APP_VERSION }}.vsix
-          path: ${{ github.workspace }}\Source\Moq.QuickMock.Vsix\bin\Release\net472\Moq.QuickMock.${{ env.APP_VERSION }}.vsix
+          path: ${{ github.workspace }}\artifacts\${{ env.APP_VERSION }}\*
+          retention-days: 90

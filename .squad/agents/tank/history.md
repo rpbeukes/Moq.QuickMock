@@ -126,3 +126,31 @@
 - Removed the legacy `DemoProject.sln` after validating the new solution file
 - Root `Moq.QuickMock.slnx` does not reference the demo solution file, so no root solution update was required
 
+### GitHub Release V1.0.8.94 Draft (2026-05-20)
+
+- **Comparison:** V1.0.8.85 → V1.0.8.94 (9 commits since last release)
+- **Release URL:** https://github.com/rpbeukes/Moq.QuickMock/releases/tag/untagged-e6464481ac0fb5b38ee0
+- **Status:** Draft (ready for review before publishing)
+- **Release notes grouped by PR:**
+  - PR #11: New unit tests for Mock.Object refactoring + NuGet updates + deprecated package migration
+  - PR #12: DemoProject .NET 10 upgrade + .slnx format migration + csproj fix + README updates
+- **Format:** Matched existing release notes style with contributor mentions and changelog link
+- **Command used:** `gh release create V1.0.8.94 --draft --title "V1.0.8.94" --notes "..."`
+
+### VS Marketplace Auto-Deploy Investigation (2026-05-21)
+
+- `CI_main.yml` already provides the right release input: it rewrites `source.extension.vsixmanifest` version from base `1.0.8` to `1.0.8.<github.run_number>`, builds the VSIX with MSBuild, and uploads `Moq.QuickMock.<version>.vsix` as the CI artifact.
+- Current workflow gap is release integrity metadata: CI does **not** yet emit a raw-file SHA256 for the VSIX, so the release/deploy pipeline should add `Moq.QuickMock.<version>.vsix.sha256` and upload it alongside the VSIX in the same artifact bundle.
+- The release-side lookup can be done without rebuilding by using the GitHub REST API: query `GET /repos/{owner}/{repo}/actions/artifacts?name=Moq.QuickMock.<version>.vsix`, filter for non-expired artifacts from `main`, then download `GET /repos/{owner}/{repo}/actions/artifacts/{artifact_id}/zip` with `GITHUB_TOKEN`.
+- For Marketplace publishing, the correct GitHub Actions approach is **not** VS Code tooling (`vsce`, `cschleiden/vscode-marketplace-publish`, `microsoft/vscode-extension-test-runner`); it is `VsixPublisher.exe` discovered on `windows-latest` via `vswhere` and invoked with a Marketplace PAT plus a publish manifest.
+- Key operational constraints: current repo tags are uppercase `V...` while Ruan's desired flow uses lowercase `v...`; the workflow should accept both. Also, GitHub Actions artifact retention is the hard limit for this integrity model—once the CI artifact expires, the exact original VSIX cannot be deployed later without violating the no-rebuild requirement.
+
+### VS Marketplace Pipeline Implementation (2026-05-21)
+
+- **Modified:** `.github\workflows\CI_main.yml`
+- **Created:** `.github\workflows\CD_release.yml`
+- **Created:** `.squad\decisions\inbox\tank-marketplace-pipeline-implemented.md`
+- CI now prepares a release bundle under `artifacts\<version>`, computes `Moq.QuickMock.<version>.vsix.sha256`, exposes the VSIX SHA256 via `GITHUB_ENV`, and uploads the bundle with 90-day retention.
+- CD now triggers on `release: published`, parses tags in `v1.0.8.95` format while accepting both lowercase `v` and uppercase `V`, resolves the matching non-expired CI artifact from `main`, verifies the extracted VSIX checksum, uploads the VSIX plus `.sha256` to the GitHub Release, and publishes the same VSIX with `VsixPublisher.exe`.
+- **Confirmed decisions applied:** publisher `Rpbeukes`, Marketplace internal name `MoqQuickMock2022`, manual tagging/release publication strategy (Option B), and 90-day artifact expiry accepted.
+
