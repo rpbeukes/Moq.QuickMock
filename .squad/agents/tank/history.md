@@ -154,3 +154,18 @@
 - CD now triggers on `release: published`, parses tags in `v1.0.8.95` format while accepting both lowercase `v` and uppercase `V`, resolves the matching non-expired CI artifact from `main`, verifies the extracted VSIX checksum, uploads the VSIX plus `.sha256` to the GitHub Release, and publishes the same VSIX with `VsixPublisher.exe`.
 - **Confirmed decisions applied:** publisher `Rpbeukes`, Marketplace internal name `MoqQuickMock2022`, manual tagging/release publication strategy (Option B), and 90-day artifact expiry accepted.
 
+### Developer Guide (README-DEV.md) (2026-05-21)
+
+- **Created:** `README-DEV.md` at repo root
+- Comprehensive developer guide covering:
+  - Prerequisites and project setup (Visual Studio 2022/2026, .NET SDK 8.0, MSBuild)
+  - Project structure (three projects: core library, VSIX, tests)
+  - Local build instructions (dotnet restore/build/test, MSBuild for VSIX)
+  - Versioning model (base version + run number = 4-part version)
+  - CI pipeline (CI_main.yml triggers, build steps, artifact retention, SHA256)
+  - Release process (full step-by-step: merge → CI → tag → publish → CD)
+  - SHA256 verification guide (for users downloading the VSIX)
+  - VS Marketplace PAT setup (dev.azure.com, GitHub Secrets, scope requirements)
+  - Troubleshooting and quick reference commands
+- Document provides accurate technical details extracted from CI/CD workflows and source manifest
+
