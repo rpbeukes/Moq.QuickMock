@@ -139,7 +139,7 @@ jobs:
             "identity": {
               "internalName": "MoqQuickMock2022"
             },
-            "overview": "README.md",
+            "overview": "marketplace-overview.md",
             "priceCategory": "free",
             "publisher": "Rpbeukes",
             "private": false,
