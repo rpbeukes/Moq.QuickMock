@@ -164,7 +164,7 @@ jobs:
           @"
           ## Marketplace deployment
 
-          - Release tag: `${{ github.event.release.tag_name }}`
+          - Release tag: v`${{ steps.version.outputs.version }}`
           - Version: `${{ steps.version.outputs.version }}`
           - Artifact: `${{ steps.version.outputs.artifact_name }}`
           - Artifact id: `${{ steps.artifact.outputs.artifact_id }}`
